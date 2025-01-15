@@ -1,0 +1,14 @@
+
+/* スマホサイズ（最大768px）用のスタイル */
+@media screen and (max-width: 768px) {
+  .container {
+    max-width: 400px;
+    width: 100%;  /* 親要素の幅に合わせて調整 */
+    padding: 10px;  /* 内側の余白 */
+    background-color: #818181;
+  }
+
+  h1 {
+    font-size: 1.5rem;  /* 見出しのフォントサイズを小さくする */
+  }
+}
