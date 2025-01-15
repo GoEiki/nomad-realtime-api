@@ -13,3 +13,6 @@ function setClient() {
     url: 'wss://10.0.1.56:3000/relay?id=user123&role=console'
   });
 urlのIPアドレスを自分のIPアドレスに置き換えてください
+
+環境変数
+OPENAI_API_KEYを設定してください
