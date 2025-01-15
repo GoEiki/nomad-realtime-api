@@ -1,75 +1,10 @@
-# Nuxt Minimal Starter
+package.jsonの"scripts"
+"ssl": "nuxt dev --https --ssl-cert ./10.0.1.56.pem --ssl-key ./10.0.1.56-key.pem --host 0.0.0.0 --port 3000",
+自分のIPアドレスの証明書を発行して追加してください。
+上記の"ssl"の該当部分のパスを変更してください。
+※ローカルネットワーク内のみの動作しかできません。
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+実行コマンド
+npm run ssl
 
-## Setup
 
-Make sure to install dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
