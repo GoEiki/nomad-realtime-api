@@ -149,17 +149,12 @@ export default defineWebSocketHandler({
     users[userId].connection.on('message', (message) => {
       // Realtime APIのサーバーイベントはそのままクライアントに返す
       if(role === 'console'){
-        console.log('send to console')
         peer.send(message.toString());
 
       }
       else if(role === 'user' && users[userId].CurrentClient === peer.id){
-        console.log('send to user');
         peer.send(message.toString());
         
-      }
-      else{
-        console.log('not send');
       }
     });
     
