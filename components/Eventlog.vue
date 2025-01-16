@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RealtimeClient } from '../utils/lib/client.js';
+import nomadconfig from '../nomadconfig.json';
 interface RealtimeEvent {
   time: string;
   source: 'client' | 'server';
@@ -33,8 +34,9 @@ function testsend(){
 }
 // クライアント・オーディオインスタンス初期化、RealtimeAPIのサーバーイベントハンドラ
 function setClient() {
+  const url = 'wss://'+nomadconfig.IPadress+':3000/relay?id=user123&role=user'
   clientRef.value = new RealtimeClient({ 
-    url: 'wss://10.0.1.56:3000/relay?id=user123&role=console'
+    url: url
   });
   const client = clientRef.value;
   if (!client) return;

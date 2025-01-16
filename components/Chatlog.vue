@@ -2,7 +2,7 @@
 import { RealtimeClient } from '../utils/lib/client.js';
 import { WavRecorder } from 'wavtools';
 import type { ItemType } from '../utils/lib/client.js';
-
+import nomadconfig from '../nomadconfig.json';
 
 // クライアントインスタンス・オーディオインスタンス初期化
 const clientRef = ref<RealtimeClient | null>(null);
@@ -28,10 +28,10 @@ async function disconnectConversation() {
 }
 // クライアント・オーディオインスタンス初期化、RealtimeAPIのサーバーイベントハンドラ
 function setClient() {
+  const url = 'wss://'+nomadconfig.IPadress+':3000/relay?id=user123&role=user'
   clientRef.value = new RealtimeClient({ 
-    url: 'wss://10.0.1.56:3000/relay?id=user123&role=console'
+    url: url
   });
-
   const client = clientRef.value;
   if (!client) return;
   // オーディオ再生

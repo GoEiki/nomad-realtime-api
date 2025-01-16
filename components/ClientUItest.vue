@@ -4,6 +4,7 @@ import { WavRecorder} from 'wavtools';
 import { WavStreamPlayer } from 'wavtools';
 import { WavRenderer} from '../utils/wav_renderer';
 import type { ItemType } from '../utils/lib/client.js';
+import nomadconfig from '../nomadconfig.json';
 
 interface RealtimeEvent {
   time: string;
@@ -60,8 +61,9 @@ function testsend(){
 }
 // クライアント・オーディオインスタンス初期化、RealtimeAPIのサーバーイベントハンドラ
 function setClient() {
+  const url = 'wss://'+nomadconfig.IPadress+':3000/relay?id=user123&role=user'
   clientRef.value = new RealtimeClient({ 
-    url: 'wss://10.0.1.56:3000/relay?id=user123&role=user'
+    url: url
   });
   wavRecorderRef.value = new WavRecorder({ sampleRate: 24000 });
   wavStreamPlayerRef.value = new WavStreamPlayer({ sampleRate: 24000 });
