@@ -101,6 +101,9 @@ function setClient() {
     } else {
       realtimeEvents.value.push(realtimeEvent);
     }
+    if(realtimeEvent.event.type === 'error'){
+      console.error(realtimeEvent.event);
+    }
   });
 
   client.on('error', (event: any) => console.error(event));
