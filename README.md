@@ -26,14 +26,14 @@ source ~/.zshrc
 ```
 ### 設定ファイルへの書き込み
 package.jsonの下記部分に証明書と秘密鍵のパスを記載
-```json:package.json
+```
 "scripts": {
 "ssl": "nuxt dev --https --ssl-cert <enter cerfiticate file path> --ssl-key <enter key path> --host 0.0.0.0 --port 3000",
 }
 ```
 
 nomadconfig.jsonの下記部分にIPアドレスを記載
-```json:nomadconfig.json
+```
 {
     "IPadress": <enter your IP adress>
 }
