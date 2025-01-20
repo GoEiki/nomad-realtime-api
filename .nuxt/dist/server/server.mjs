@@ -1,0 +1,1 @@
+export { default } from "file:///Users/tamiyaayumu/nomad-realtime-api/node_modules/@nuxt/vite-builder/dist/runtime/vite-node.mjs"

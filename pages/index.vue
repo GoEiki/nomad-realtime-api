@@ -1,6 +1,6 @@
 <template>
     <div class="voice-interaction-container">
-      <ClientUItest />
+      <Storetest />
 
     </div>
 </template>

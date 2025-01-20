@@ -5,7 +5,6 @@
       <nav>
       <ul>
         <li><NuxtLink to="/">テスト</NuxtLink></li>
-        <li><NuxtLink to="/consolepage">コンソール</NuxtLink></li>
       </ul>
     </nav>
     </header>

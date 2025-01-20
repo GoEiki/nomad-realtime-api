@@ -1,63 +1,33 @@
 <script setup lang="ts">
-import { RealtimeClient } from '../utils/lib/client.js';
-import { WavRecorder } from 'wavtools';
-import type { ItemType } from '../utils/lib/client.js';
-import nomadconfig from '../nomadconfig.json';
-
-// クライアントインスタンス・オーディオインスタンス初期化
-const clientRef = ref<RealtimeClient | null>(null);
-    
-// イベントアイテム初期化
-const items = ref<ItemType[]>([]);
-const isConnected = ref(false);
-
-// Realtime APIに接続・オーディオ開始
-async function connectConversation() {
-  const client = clientRef.value;
-  if (!client) return;
-  await client.connect();
-  isConnected.value=true;
-}
-
-// Realtime APIから切断・オーディオ終了
-async function disconnectConversation() {
-  const client = clientRef.value;
-  if (!client) return;
-  client.disconnect();
-  isConnected.value=false;
-}
-// クライアント・オーディオインスタンス初期化、RealtimeAPIのサーバーイベントハンドラ
-function setClient() {
-  const url = 'wss://'+nomadconfig.IPadress+':3000/relay?id=user123&role=user'
-  clientRef.value = new RealtimeClient({ 
-    url: url
-  });
-  const client = clientRef.value;
-  if (!client) return;
-  // オーディオ再生
-  client.on('conversation.updated', async ({ item, delta }: any) => {
-    //console.log('conversation.updated');
-    const Items = client.conversation.getItems();
-    if (item.status === 'completed' && item.formatted.audio?.length) {
-      const wavFile = await WavRecorder.decode(
-        item.formatted.audio,
-        24000,
-        24000
-      );
-      item.formatted.file = wavFile;
-    }
-    const latestItem = Items[Items.length - 1]; // 最新の要素を取得
-    if (latestItem && !items.value.some(existingItem => existingItem.id === latestItem.id)) {
-      items.value.push(latestItem);
-    }
-  });
-  client.on('error', (event: any) => console.error(event));
-}
+import { RealtimeStore } from '@/stores/APIClientStore';
+import { ConnectServer } from '@/composables/APIClient';
+const clientCanvasRef = ref<HTMLCanvasElement | undefined>(undefined);
+const serverCanvasRef = ref<HTMLCanvasElement | undefined>(undefined);
+const messageLogRef = ref<HTMLElement>();
+const conversationLogRef = ref<HTMLElement>();
+const realtimestore = RealtimeStore(); // Pinia ストアを取得
+const { connectConversation, disconnectConversation, setClient, ConversationHandler, setCanvas } = ConnectServer();
 onMounted(() => {
-  setClient();
+    setClient('user');
+    ConversationHandler();
+    if (clientCanvasRef.value && serverCanvasRef.value) {
+        setCanvas(clientCanvasRef.value, serverCanvasRef.value);   
+    }
+    if(messageLogRef.value) {
+        realtimestore.ScrollToBottom(messageLogRef.value, realtimestore.realtimeEvents);
+    }
+    if(conversationLogRef.value) {
+        realtimestore.ScrollToBottom(conversationLogRef.value, realtimestore.items);
+    }
+
+});
+onUnmounted(() => {
+    if (realtimestore.isConnected) {
+        disconnectConversation();
+    }
 });
 async function toggleConnection() {
-  if (isConnected.value) {
+  if (realtimestore.isConnected) {
     disconnectConversation();
   } else {
     connectConversation();
@@ -69,16 +39,34 @@ async function toggleConnection() {
   <div>
     <div class="container">
       <button @click="toggleConnection">
-        {{ isConnected ? '切断' : '接続' }}
+        {{ realtimestore.isConnected ? '切断' : '接続' }}
       </button>
+      <div class="audio-waveform">
+        <h3>音声波形</h3>
+        <canvas ref="clientCanvasRef" width="600" height="150"></canvas>
+      </div>
+      <div class="audio-waveform">
+        <h3>音声波形</h3>
+        <canvas ref="serverCanvasRef" width="600" height="150"></canvas>
+      </div>
+      <div class="message-log" ref="messageLogRef">
+        <h3>RealTimeEvents</h3>
+        <ul>
+          <li v-for="(event, index) in realtimestore.realtimeEvents" :key="index">
+            <div>{{ event.source }} : {{ event.event['type'] }}</div>
+            <div v-if="event.count"> : {{ event.count }}</div>
+          </li>
+        </ul>
+      </div>
+      
       <div class="content-block-title">conversation</div>
-      <div class="content-block-body" data-conversation-content>
+      <div class="content-block-body" data-conversation-content ref="conversationLogRef">
         <!-- 会話がない場合 -->
-        <div v-if="!items.length">awaiting connection...</div>
+        <div v-if="!realtimestore.items.length">awaiting connection...</div>
 
         <!-- 会話リスト -->
         <div
-          v-for="conversationItem in items"
+          v-for="conversationItem in realtimestore.items"
           :key="conversationItem.id"
           class="conversation-item"
         >
@@ -185,6 +173,8 @@ button {
   border-radius: 8px;
   padding: 1rem;
   background-color: #f9f9f9;
+  overflow-y: auto;
+  max-height: 500px;
 }
 
 .no-connection {
