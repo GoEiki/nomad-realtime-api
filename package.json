@@ -19,6 +19,7 @@
     "react": "^19.0.0",
     "vue": "latest",
     "vue-router": "latest",
+    "vue-window-manager": "^0.3.6",
     "wavtools": "^0.1.5"
   },
   "devDependencies": {

@@ -33,4 +33,5 @@ export { ConnectConsole } from '../composables/APIConsoleClient';
 export { WavRenderer } from '../utils/wav_renderer';
 export { RealtimeStore, RealtimeEvent, ServerStatus } from '../stores/StateStore';
 export { defineStore, acceptHMRUpdate, usePinia, storeToRefs } from '../node_modules/@pinia/nuxt/dist/runtime/composables';
+export { useNuxtDevTools } from '../node_modules/@nuxt/devtools/dist/runtime/use-nuxt-devtools';
 export { definePageMeta } from '../node_modules/nuxt/dist/pages/runtime/composables';
