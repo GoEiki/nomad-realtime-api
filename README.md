@@ -2,7 +2,7 @@
 ## インストール方法
 ### プログラムのインストール
 ```
-git install https://github.com/tamiyaayumu/nomad-realtime-api
+git clone https://github.com/tamiyaayumu/nomad-realtime-api
 ```
 ### 自己署名証明書の発行
 1. 秘密鍵の生成
