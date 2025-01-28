@@ -4,7 +4,7 @@ import { RealtimeClient } from '../utils/lib/client.js';
 import { WavRecorder } from 'wavtools';
 import { WavStreamPlayer } from 'wavtools';
 import type { RealtimeEvent } from '@/stores/APIClientStore';
-export const ConnectServer = () => {
+export const ConnectUser = () => {
     const config = useRuntimeConfig();
     const realtimestore = RealtimeStore(); // Pinia ストアを取得
     // Realtime APIに接続・オーディオ開始
@@ -27,13 +27,13 @@ export const ConnectServer = () => {
         if (!client || !wavRecorder || !wavStreamPlayer) return;
         client.disconnect();
         await wavRecorder.end();
-         wavStreamPlayer.interrupt();
+        wavStreamPlayer.interrupt();
         realtimestore.isConnected = false;
     }
     // クライアント・オーディオインスタンス初期化
-    function setClient(role: string) {
+    function setClient() {
         realtimestore.client = new RealtimeClient({
-            url: 'wss://' + config.public.DefaultIPAdress + '/relay?id=' + config.public.DefaultUserID + '&role='+role
+            url: 'wss://' + config.public.DefaultIPAdress + '/relay?id=' + config.public.DefaultUserID + '&role=user'
         });
         realtimestore.wavRecorder = new WavRecorder({ sampleRate: 24000 });
         realtimestore.wavStreamPlayer = new WavStreamPlayer({ sampleRate: 24000 });
@@ -70,7 +70,7 @@ export const ConnectServer = () => {
             const trackSampleOffset = await wavStreamPlayer.interrupt();
             if (trackSampleOffset?.trackId) {
                 const { trackId, offset } = trackSampleOffset;
-                client.cancelResponse(trackId, offset);
+                await client.cancelResponse(trackId, offset);
             }
         });
 

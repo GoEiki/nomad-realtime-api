@@ -4,7 +4,8 @@
     <header>
       <nav>
       <ul>
-        <li><NuxtLink to="/">テスト</NuxtLink></li>
+        <li><NuxtLink to="/">UserUITest</NuxtLink></li>
+        <li><NuxtLink to="/ConsoleUItest">ConsoleUITest</NuxtLink></li>
       </ul>
     </nav>
     </header>

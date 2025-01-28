@@ -45,3 +45,9 @@ nomadconfig.jsonの下記部分にIPアドレスを記載
 npm run ssl
 ```
 表示されたURLをブラウザで開く
+
+##
+```
+npm install
+```
+node_modulesの変更がある場合依存関係を更新してください

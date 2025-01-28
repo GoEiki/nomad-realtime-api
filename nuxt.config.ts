@@ -1,5 +1,8 @@
 // nuxt.config.ts
 export default defineNuxtConfig({
+  routeRules: {
+    '/ConsoleUItest':{ssr:false},
+  },
   css: ['@/assets/styles/main.css'],
   compatibilityDate: '2024-12-06',
   modules: ['@pinia/nuxt'],

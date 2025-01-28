@@ -10,6 +10,11 @@ export interface RealtimeEvent {
   count?: number;
   event: { [key: string]: any };
 }
+export interface ServerStatus{
+  UserPeers: {[id: string]: string };
+  ConsolePeers: {[id: string]: string };
+  CurrentClient: string|null;
+}
 export const RealtimeStore = defineStore('messages', {
   state: () => ({
     realtimeEvents:  [] as RealtimeEvent[], // Realtime API のイベントを保存
@@ -18,19 +23,20 @@ export const RealtimeStore = defineStore('messages', {
     wavStreamPlayer: null as WavStreamPlayer | null, // 再生インスタンス
     clientCanvas: undefined as HTMLCanvasElement | undefined, // クライアントの波形描画キャンバス
     serverCanvas: undefined as HTMLCanvasElement | undefined, // サーバーの波形描画キャンバス
-    isConnected: false, // Realtime API に接続しているかどうか
-    items: [] as ItemType[], // イベントアイテム
+    isConnected: false, // Realtime API に接続状態
+    isMuted: false, // ミュート状態
+    items: [] as ItemType[], // 対話イベントアイテム
+    NomadEvents:[] as RealtimeEvent[],// Nomadのイベント
+    RelayStatus: {UserPeers:{},ConsolePeers:{},CurrentClient:null} as ServerStatus,
   }),
   actions: {
-    ScrollToBottom(element: HTMLElement,instance: any) {
-      watch(instance, (newValue, oldValue)=> {
-        console.log('scroll to bottom2', newValue, oldValue);
-        if(element){
-          if(true){
-            element.scrollTop = element.scrollHeight;
-          }
-        }
-      },{ deep: true });
+    toggleMute(){
+      this.isMuted = !this.isMuted;
+    },
+    clearState() {
+      this.realtimeEvents = [];
+      this.items = [];
+      this.RelayStatus = {UserPeers:{},ConsolePeers:{},CurrentClient:null};
     }
   },
 });

@@ -2,8 +2,8 @@ import { WebSocket } from 'ws';
 
 class User {
   readonly connection: WebSocket;
-  userpeers: { [id: string]: any };
-  consolepeers: { [id: string]: any };
+  userpeers: { [id: string]: {peer:any,name:string} };
+  consolepeers: { [id: string]:  {peer:any,name:string} };
   CurrentClient: any;
   [key: string]: any;
 
@@ -17,66 +17,106 @@ class User {
     return new Proxy(this, {
       set: (target, property:string, value:any) => {
           target[property] = value;
-          this.notifyChange(property, value);
+          this.SendToConsolePeers(this.StringfyStatus());
           console.log(`${property} changed to ${value}`);
         return true;
       }
     });
   }
+  //プロキシのセット
   createPeerProxy(peers: { [id: string]: any },Proxyname:string = '') {
     return new Proxy(peers, {
       set: (target, property: string, value: any) => {
         target[property] = value;
-        this.notifyChange(property, value);
+        this.SendToConsolePeers(this.StringfyStatus());
         console.log(`new ${Proxyname} added Peer ID : ${property}`);
         return true;
       },
       deleteProperty: (target, property: string) => {
         delete target[property];
-        this.notifyChange(property, null); // 削除された場合はnullを通知
+        this.SendToConsolePeers(this.StringfyStatus());
         console.log(`${Proxyname} deleted Peer ID : ${property} `);
         return true;
       }
     });
   }
-  // JSON.stringify時に循環参照を回避するreplacer関数を追加
-  private safeStringify(obj: any): string {
-    return JSON.stringify(obj, (key, value) => {
-      // 循環参照を防ぐため、特定のプロパティを除外する
-      if (key === '_request' || key === '_req') {
-        return undefined;
-      }
-      return value;
-    });
-  }
-  // オブジェクトを安全にコピーするヘルパー関数
-  private safeObject(obj: any) {
-    return JSON.parse(this.safeStringify(obj));
-  }
-  notifyChange(property: string, value: any) {
-    // userpeers と consolepeers の両方に通知
-    const allData = {
-      userpeers: this.safeObject(Object.keys(this.userpeers)),
-      consolepeers: this.safeObject(Object.keys(this.consolepeers)),
-      CurrentClient: this.CurrentClient,
-    };
-    [...Object.values(this.consolepeers)].forEach(peer => {
-      try {
-        // 循環参照を回避して通知
-        peer.send(this.safeStringify({
-          type: 'user.update',
-          Property:property,
-          //newValue:value,
-          allData
-        }));
-      } catch (error) {
-        console.error("Error sending update:", error);
+  //Userメンバーをメッセージ化
+  private StringfyStatus(){
+    const UserPeer  = Object.entries(this.userpeers as { [key: string]: { peer: any, name: string } }).reduce((acc: { [key: string]: string }, [id, value]: [string, { peer: any, name: string }]) => {
+      acc[id] = value.name as string;
+      return acc;
+    }, {});
+    const ConsolePeer = Object.entries(this.consolepeers as { [key: string]: { peer: any, name: string } }).reduce((acc: { [key: string]: string }, [id, value]: [string, { peer: any, name: string }]) => {
+      acc[id] = value.name as string;
+      return acc;
+    }, {});
+    const message = JSON.stringify({
+      type: 'nomad.event',
+      event: 'relay.event',
+      data:{
+        userpeers: UserPeer,
+        consolepeers: ConsolePeer,
+        CurrentClient: this.CurrentClient,
       }
     });
+    return message;
+  }
+  //forgetID以外のコンソールクライアントにメッセージを送信
+  SendToConsolePeers(message: string, forgetID?: string) {
+    // consolepeers にメッセージを送信
+    Object.keys(this.consolepeers).forEach(id => {
+      if(id !== forgetID) {
+        const peer = this.consolepeers[id].peer;
+        try {
+          peer.send(message);
+        } catch (error) {
+          console.error("Error sending message:", error);
+        }
+    }
+    });
+  }
+  //UserPeerが存在するか確認
+  private hasUserPeer(id: string): boolean {
+    return this.userpeers.hasOwnProperty(id);
+  }
+  TransferClient(newID: string){
+    if(this.hasUserPeer(newID)){
+      this.CurrentClient = newID;
+    }
+    else{
+      console.error('Transfer failed. Client ID is not found');
+    }
   }
 }
 
+// ランダムな名前を生成
+function generateRandomName(): string {
+  // よくある人名のリスト (30個)
+  const names = [
+    'Alice', 'Bob', 'Charlie', 'David', 'Eve', 
+    'Fiona', 'George', 'Hannah', 'Ian', 'Jack', 
+    'Karen', 'Liam', 'Mia', 'Noah', 'Olivia', 
+    'Paul', 'Quinn', 'Rachel', 'Sam', 'Tina', 
+    'Uma', 'Victor', 'Wendy', 'Xavier', 'Yara', 
+    'Zane', 'Sophia', 'Emma', 'Lucas', 'Daniel'
+  ];
 
+  // 絵文字のリスト (30個)
+  const emojis = [
+    '😀', '🐱', '🐶', '🦊', '🐻', 
+    '🐼', '🦁', '🐯', '🐰', '🐵', 
+    '🐸', '🐥', '🐟', '🐘', '🐍', 
+    '🦉', '🐴', '🐧', '🐨', '🦒', 
+    '🐓', '🐳', '🐬', '🐢', '🐞', 
+    '🌸', '🌻', '🌟', '🔥', '🍎'
+  ];
+
+  // ランダムに名前と絵文字を選ぶ
+  const randomName = names[Math.floor(Math.random() * names.length)];
+  const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+
+  return `${randomName}${randomEmoji}`;
+}
 const users: { [id: string]: User } = {};
 console.log('relay server starting');
 export default defineWebSocketHandler({
@@ -90,6 +130,7 @@ export default defineWebSocketHandler({
     const url = new URL(peer.websocket.url);  // URLオブジェクトを使ってクエリパラメータを解析
     const userId = url.searchParams.get('id');  // idをクエリパラメータから取得
     const role = url.searchParams.get('role');  // idをクエリパラメータから取得
+    let name = url.searchParams.get('name');  // nameをクエリパラメータから取得
     if (!userId) {
       console.error('User ID is required');
       peer.close();
@@ -100,7 +141,12 @@ export default defineWebSocketHandler({
       peer.close();
       return;
     }
-    console.log((`new connection ( User ID:${userId} Role: ${role} Peer ID: ${peer.id}`));
+    if (!name) {
+      console.log('Name is not defined');
+      if(role==='user'){name='USER-'+generateRandomName();}
+      else if(role==='console'){name='CONSOLE-'+generateRandomName();}
+    }
+    console.log(`new connection ( User ID:${userId} Name: ${name} Role: ${role} Peer ID: ${peer.id})`);
 
     //ユーザーIDが存在しなければ新しい接続を作成
     if (!users[userId]) {
@@ -128,23 +174,23 @@ export default defineWebSocketHandler({
         }));
       });
       console.log('opened API connection');
-      //クライアントを追加
-      if(role === 'console'){
-        users[userId].consolepeers[peer.id] = peer;
-      }
-      else if(role === 'user'){
-        users[userId].userpeers[peer.id] = peer;
-        users[userId].CurrentClient = peer.id;
+    }
+    if(role === 'console'){
+      if (name) {
+        users[userId].consolepeers[peer.id] = { peer, name };
+      } else {
+        console.error('Name is null');
+        peer.close();
       }
     }
-    else{
-      if(role === 'console'){
-        users[userId].consolepeers[peer.id] = peer;
+    else if(role === 'user'){
+      if (name) {
+        users[userId].userpeers[peer.id] = { peer, name };
+      } else {
+        console.error('Name is null');
+        peer.close();
       }
-      else if(role === 'user'){
-        users[userId].userpeers[peer.id] = peer;
-        users[userId].CurrentClient = peer.id;
-      }
+      users[userId].CurrentClient = peer.id;
     }
     users[userId].connection.on('message', (message) => {
       // Realtime APIのサーバーイベントはそのままクライアントに返す
@@ -174,14 +220,10 @@ export default defineWebSocketHandler({
     }
     const parsedMessage = JSON.parse(message.text());
     if(parsedMessage['type'] === 'nomad.event'){
-      if(parsedMessage['event'] === 'transfer.event'){
-        const userPeerIds = Object.keys(users[userId].userpeers);
-        if (userPeerIds.length > 0) {
-          const randomIndex = Math.floor(Math.random() * userPeerIds.length);
-          users[userId].CurrentClient = userPeerIds[randomIndex];
-        }
-      }
       console.log('nomad_event');
+      if(parsedMessage['event']==='transfer.event'){
+        users[userId].TransferClient(parsedMessage['data']['newClient']);
+      }
     }
     else{
       // クライアントイベントはそのままRealtime APIに中継する
@@ -192,12 +234,7 @@ export default defineWebSocketHandler({
       }
     }
     // コンソールクライアントにメッセージを送信
-    Object.keys(users[userId].consolepeers).forEach(id => {
-      if (id !== peer.id) {
-        users[userId].consolepeers[id].send(message.text());
-      }
-    });
-
+    users[userId].SendToConsolePeers(message.text(), peer.id);
   },
   close(peer) {
     if (!peer.websocket.url) {

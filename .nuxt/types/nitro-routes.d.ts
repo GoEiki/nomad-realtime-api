@@ -6,6 +6,9 @@ declare module "nitropack/types" {
     '/relay': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/relay').default>>>>
     }
+    '/state': {
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/routes/state').default>>>>
+    }
     '/__nuxt_error': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/nuxt/dist/core/runtime/nitro/renderer').default>>>>
     }
