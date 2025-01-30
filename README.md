@@ -1,5 +1,6 @@
 # NOMADシステム
 ## インストール方法
+git, Node.js, opensslがインストールされていること
 ### プログラムのインストール
 ```
 git clone https://github.com/tamiyaayumu/nomad-realtime-api
