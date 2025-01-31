@@ -8,11 +8,11 @@ MacOSでHomebrewを使用している場合
 brew install node
 ```
 #### opensslのインストール
-Windowsの場合
-以下のリンク先からインストーラーをダウンロードする
-[インストールページ](https://slproweb.com/products/Win32OpenSSL.html)
-インストールが完了したら、環境変数を設定する
-環境変数を編集>Pathに¥OpenSSL-Win64¥binを追加する
+**Windowsの場合**
+以下のリンク先からインストーラーをダウンロードする  
+[インストールページ](https://slproweb.com/products/Win32OpenSSL.html)  
+インストールが完了したら、環境変数を設定する  
+環境変数を編集>Pathに¥OpenSSL-Win64¥binを追加する  
 `openssl version`でversionが正しく表示されたらOK
 
 ### プログラムのインストール
@@ -43,10 +43,9 @@ echo "export OPENAI_API_KEY='yourkey'" >> ~/.zshrc
 source ~/.zshrc
 ```
 **Windowsの場合**
-環境変数を編集>ユーザー環境変数>新規を開く
-変数名：OPENAI_API_KEY
-変数値：ここにOpenaiのAPIキーの文字列を入力
-
+環境変数を編集>ユーザー環境変数>新規を開く  
+変数名：OPENAI_API_KEY  
+変数値：ここにOpenaiのAPIキーの文字列を入力  
 `echo $OPENAI_API_KEY`を実行して表示されていればOK
 
 ### 設定ファイルへの書き込み
