@@ -1,10 +1,25 @@
 # NOMADシステム
 ## インストール方法
-git, Node.js, opensslがインストールされていること
+### 事前準備
+git, Node.js, opensslがインストールされていれば、この手順は不要
+#### Node.jsのインストール
+MacOSでHomebrewを使用している場合
+```
+brew install node
+```
+#### opensslのインストール
+Windowsの場合
+以下のリンク先からインストーラーをダウンロードする
+[インストールページ](https://slproweb.com/products/Win32OpenSSL.html)
+インストールが完了したら、環境変数を設定する
+環境変数を編集>Pathに¥OpenSSL-Win64¥binを追加する
+`openssl version`でversionが正しく表示されたらOK
+
 ### プログラムのインストール
 ```
 git clone https://github.com/tamiyaayumu/nomad-realtime-api
 ```
+
 ### 自己署名証明書の発行
 1. 秘密鍵の生成
 ```
@@ -14,6 +29,8 @@ openssl genrsa 2048 > nomad.key
 ```
 openssl req -new -x509 -days 3650 -key nomad.key -sha512 -out nomad.crt
 ```
+実行すると、国やメールアドレスなどの入力を求められるが、すべて空欄で構わない
+
 ### OpenAIのAPIキー
 環境変数としてOPENAI_API_KEYを設定する  
 **zshの場合**  
@@ -25,6 +42,13 @@ echo "export OPENAI_API_KEY='yourkey'" >> ~/.zshrc
 ```
 source ~/.zshrc
 ```
+**Windowsの場合**
+環境変数を編集>ユーザー環境変数>新規を開く
+変数名：OPENAI_API_KEY
+変数値：ここにOpenaiのAPIキーの文字列を入力
+
+`echo $OPENAI_API_KEY`を実行して表示されていればOK
+
 ### 設定ファイルへの書き込み
 package.jsonの下記部分に証明書と秘密鍵のパスを記載
 ```
