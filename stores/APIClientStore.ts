@@ -37,6 +37,27 @@ export const RealtimeStore = defineStore('messages', {
       this.realtimeEvents = [];
       this.items = [];
       this.RelayStatus = {UserPeers:{},ConsolePeers:{},CurrentClient:null};
+    },
+    addItem(item:ItemType) {
+      this.items.push(item);
+      const MAX_ITEMS = 30; // 最大30件まで
+      if (this.items.length > MAX_ITEMS) {
+        this.items.shift(); // 先頭を削除（古いデータを消す）
+      }
+    },
+    addEvent(event:RealtimeEvent){
+      this.realtimeEvents.push(event);
+      const MAX_EVENTS = 30; // 最大30件まで
+      if (this.realtimeEvents.length > MAX_EVENTS) {
+        this.realtimeEvents.shift(); // 先頭を削除（古いデータを消す）
+      }
+    },
+    addNomadEvent(event:RealtimeEvent){
+      this.NomadEvents.push(event);
+      const MAX_EVENTS = 30; // 最大30件まで
+      if (this.NomadEvents.length > MAX_EVENTS) {
+        this.NomadEvents.shift(); // 先頭を削除（古いデータを消す）
+      }
     }
   },
 });
