@@ -249,6 +249,7 @@ export class RealtimeClient extends RealtimeEventHandler {
    */
   _addAPIEventHandlers() {
     // Event Logging handlers
+    
     this.realtime.on('client.*', (event) => {
       const realtimeEvent = {
         time: new Date().toISOString(),
@@ -265,6 +266,7 @@ export class RealtimeClient extends RealtimeEventHandler {
       };
       this.dispatch('realtime.event', realtimeEvent);
     });
+    
 
     // Handles session created event, can optionally wait for it
     this.realtime.on(
@@ -580,10 +582,12 @@ export class RealtimeClient extends RealtimeEventHandler {
       this.realtime.send('input_audio_buffer.append', {
         audio: RealtimeUtils.arrayBufferToBase64(arrayBuffer),
       });
+      /*//メモリを占有していたためコメントアウト、対話コンテキストの影響の可能性あり
       this.inputAudioBuffer = RealtimeUtils.mergeInt16Arrays(
         this.inputAudioBuffer,
         arrayBuffer,
       );
+      */
     }
     return true;
   }
@@ -648,7 +652,9 @@ export class RealtimeClient extends RealtimeEventHandler {
   sendNomadEvent(event) {
     this.realtime.send('nomad.event', event);
   }
-
+  sendStateEvent(event) {
+    this.realtime.send('state.event', event);
+  }
   /**
    * Utility for waiting for the next `conversation.item.appended` event to be triggered by the server
    * @returns {Promise<{item: ItemType}>}
