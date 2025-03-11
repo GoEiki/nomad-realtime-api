@@ -11,7 +11,7 @@ export const ConnectConsole = () => {
     async function connectConversation() {
         const client = realtimestore.client;
         const wavStreamPlayer = realtimestore.wavStreamPlayer;
-        if (!client  || !wavStreamPlayer) return;
+        if (!client || !wavStreamPlayer) return;
         await wavStreamPlayer.connect();
         await client.connect();
         realtimestore.isConnected = true;
@@ -34,7 +34,7 @@ export const ConnectConsole = () => {
     };
     // RealtimeAPIのサーバーイベントハンドラ
     function ConversationHandler() {
-        if (!realtimestore.client || !realtimestore.wavStreamPlayer ) return;
+        if (!realtimestore.client || !realtimestore.wavStreamPlayer) return;
         const client = realtimestore.client;
         const wavStreamPlayer = realtimestore.wavStreamPlayer;
         if (!client || !wavStreamPlayer) return;
@@ -42,7 +42,7 @@ export const ConnectConsole = () => {
         // オーディオ再生
         client.on('conversation.updated', async ({ item, delta }: any) => {
             const Items = client.conversation.getItems();
-            if (delta?.audio&& !realtimestore.isMuted) {
+            if (delta?.audio && !realtimestore.isMuted) {
                 wavStreamPlayer.add16BitPCM(delta.audio, item.id);
             }
             const latestItem = Items[Items.length - 1]; // 最新の要素を取得
@@ -60,11 +60,11 @@ export const ConnectConsole = () => {
         watch(
             () => realtimestore.isMuted,
             (isMuted) => {
-              if (isMuted) {
-                wavStreamPlayer.interrupt();
-              }
+                if (isMuted) {
+                    wavStreamPlayer.interrupt();
+                }
             }
-          );
+        );
         // オーディオ停止
         client.on('conversation.interrupted', async () => {
             const trackSampleOffset = await wavStreamPlayer.interrupt();
@@ -82,20 +82,20 @@ export const ConnectConsole = () => {
             if (realtimeEvent.event.type === 'error') {
                 console.error(realtimeEvent.event);
             }
-            if(realtimeEvent.event.type === 'nomad.event'){
+            if (realtimeEvent.event.type === 'nomad.event') {
                 realtimestore.addNomadEvent(realtimeEvent);
-              }
+            }
         });
 
         client.on('error', (event: any) => console.error(event));
     };
-    function NomadEventsHandler(){
+    function NomadEventsHandler() {
         watch(realtimestore.NomadEvents, () => {
             const NomadEvents = realtimestore.NomadEvents;
-            if(NomadEvents.length > 0){
+            if (NomadEvents.length > 0) {
                 const latestEvent = NomadEvents[NomadEvents.length - 1];
                 console.log(latestEvent);
-                if(latestEvent.event.event==='relay.event'){
+                if (latestEvent.event.event === 'relay.event') {
                     realtimestore.RelayStatus.UserPeers = latestEvent.event.data.userpeers;
                     realtimestore.RelayStatus.ConsolePeers = latestEvent.event.data.consolepeers;
                     realtimestore.RelayStatus.CurrentClient = latestEvent.event.data.CurrentClient;

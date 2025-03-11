@@ -31,10 +31,16 @@ export const ConnectUser = () => {
         realtimestore.isConnected = false;
     }
     // クライアント・オーディオインスタンス初期化
-    function setClient() {
-        realtimestore.client = new RealtimeClient({
-            url: 'wss://' + config.public.DefaultIPAdress + '/relay?id=' + config.public.DefaultUserID + '&role=user'
-        });
+    function setClient(name?: string) {
+        if (name) {
+            realtimestore.client = new RealtimeClient({
+                url: 'wss://' + config.public.DefaultIPAdress + '/relay?id=' + config.public.DefaultUserID + '&role=user' + '&name=' + name
+            });
+        } else {
+            realtimestore.client = new RealtimeClient({
+                url: 'wss://' + config.public.DefaultIPAdress + '/relay?id=' + config.public.DefaultUserID + '&role=user'
+            });
+        }
         realtimestore.wavRecorder = new WavRecorder({ sampleRate: 24000 });
         realtimestore.wavStreamPlayer = new WavStreamPlayer({ sampleRate: 24000 });
     };
@@ -60,9 +66,11 @@ export const ConnectUser = () => {
                     realtimestore.items = realtimestore.items.slice(0, -1).concat(latestItem);
                 } else {
                     // idが異なる場合、新しい要素を追加
-                    realtimestore.items.push(latestItem);
+                    realtimestore.addItem(latestItem);
                 }
             }
+
+
         });
 
         // オーディオ停止
@@ -81,10 +89,13 @@ export const ConnectUser = () => {
                 lastEvent.count = (lastEvent.count || 0) + 1;
                 realtimestore.realtimeEvents = realtimestore.realtimeEvents.slice(0, -1).concat(lastEvent);
             } else {
-                realtimestore.realtimeEvents.push(realtimeEvent);
+                realtimestore.addEvent(realtimeEvent);
             }
             if (realtimeEvent.event.type === 'error') {
                 console.error(realtimeEvent.event);
+            }
+            if (realtimeEvent.event.type === 'nomad.event') {
+                realtimestore.addNomadEvent(realtimeEvent);
             }
         });
 
@@ -152,6 +163,7 @@ export const ConnectUser = () => {
             window.requestAnimationFrame(render);
         }
         render();
+
     }
     return {
         connectConversation,

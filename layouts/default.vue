@@ -4,24 +4,19 @@
     <header>
       <nav>
       <ul>
-        <li><NuxtLink to="/">UserUITest</NuxtLink></li>
-        <li><NuxtLink to="/ConsoleUItest">ConsoleUITest</NuxtLink></li>
+        <li><NuxtLink to="/">UserUI</NuxtLink></li>
+        <li><NuxtLink to="/ConsoleUI">ConsoleUI</NuxtLink></li>
+        <li><NuxtLink to="/StateManager">StateManager</NuxtLink></li>
       </ul>
     </nav>
     </header>
     <main>
       <NuxtPage />
     </main>
-    <footer>
-      <p>フッター</p>
-    </footer>
   </div>
 </template>
 
 <script>
-export default {
-  // レイアウトのロジック
-};
 </script>
 
 <style scoped>

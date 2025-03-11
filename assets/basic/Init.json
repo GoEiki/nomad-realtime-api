@@ -1,0 +1,21 @@
+{
+    "Type": "SubTask",
+    "Alias":"InitAgent",
+    "TaskID": "Init",
+    "ToDo": {
+        "Method": "UpdateSession",
+        "Data": {
+            "instructions": "{{headerinstructions}}{{defaultinstructions}}{{footerinstructions}}",
+            "modalities":["text","audio"],
+            "turn_detection": { "type": "{{turn_detection}}" },
+            "input_audio_transcription": {"model": "whisper-1"},
+            "voice": "{{voice}}",
+            "tool_choice": "auto"
+        }
+    },
+    "Check": {
+        "Method": "null"
+    },
+    "Dependenceis": "null",
+    "Status": "Waiting"
+}

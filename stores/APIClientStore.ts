@@ -1,4 +1,3 @@
-// stores/messages.js
 import { defineStore } from 'pinia';
 import { RealtimeClient } from '../utils/lib/client.js';
 import { WavRecorder} from 'wavtools';
@@ -27,6 +26,7 @@ export const RealtimeStore = defineStore('messages', {
     isMuted: false, // ミュート状態
     items: [] as ItemType[], // 対話イベントアイテム
     NomadEvents:[] as RealtimeEvent[],// Nomadのイベント
+    FunctionEvents:[] as RealtimeEvent[],// FunctionCall用イベント
     RelayStatus: {UserPeers:{},ConsolePeers:{},CurrentClient:null} as ServerStatus,
   }),
   actions: {
@@ -35,29 +35,41 @@ export const RealtimeStore = defineStore('messages', {
     },
     clearState() {
       this.realtimeEvents = [];
+      this.NomadEvents = [];
       this.items = [];
       this.RelayStatus = {UserPeers:{},ConsolePeers:{},CurrentClient:null};
     },
     addItem(item:ItemType) {
       this.items.push(item);
-      const MAX_ITEMS = 30; // 最大30件まで
+      const MAX_ITEMS = 100; // 最大30件まで
       if (this.items.length > MAX_ITEMS) {
         this.items.shift(); // 先頭を削除（古いデータを消す）
       }
     },
     addEvent(event:RealtimeEvent){
       this.realtimeEvents.push(event);
-      const MAX_EVENTS = 30; // 最大30件まで
+      const MAX_EVENTS = 200; // 最大30件まで
       if (this.realtimeEvents.length > MAX_EVENTS) {
         this.realtimeEvents.shift(); // 先頭を削除（古いデータを消す）
       }
     },
     addNomadEvent(event:RealtimeEvent){
+      console.log(event);
       this.NomadEvents.push(event);
       const MAX_EVENTS = 30; // 最大30件まで
       if (this.NomadEvents.length > MAX_EVENTS) {
         this.NomadEvents.shift(); // 先頭を削除（古いデータを消す）
       }
+    },
+    addFunctionEvent(event:RealtimeEvent){
+      this.FunctionEvents.push(event);
+      const MAX_EVENTS = 30; // 最大30件まで
+      if (this.FunctionEvents.length > MAX_EVENTS) {
+        this.FunctionEvents.shift(); // 先頭を削除（古いデータを消す）
+        }
+      },
+    sendEvent(eventtype: string, data: any) {
+      this.client?.sendNomadEvent({ event: eventtype, data });
     }
   },
 });

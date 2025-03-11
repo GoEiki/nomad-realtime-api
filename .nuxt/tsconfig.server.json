@@ -17,19 +17,15 @@
         "./types/nitro-imports"
       ],
       "~/*": [
-        "../*",
         "../*"
       ],
       "@/*": [
-        "../*",
         "../*"
       ],
       "~~/*": [
-        "../*",
         "../*"
       ],
       "@@/*": [
-        "../*",
         "../*"
       ],
       "nitropack/types": [
@@ -76,45 +72,6 @@
       ],
       "vite/client": [
         "../node_modules/vite/client"
-      ],
-      "~": [
-        "./.."
-      ],
-      "@": [
-        "./.."
-      ],
-      "~~": [
-        "./.."
-      ],
-      "@@": [
-        "./.."
-      ],
-      "#shared": [
-        "../shared"
-      ],
-      "assets": [
-        "../assets"
-      ],
-      "assets/*": [
-        "../assets/*"
-      ],
-      "public": [
-        "../public"
-      ],
-      "public/*": [
-        "../public/*"
-      ],
-      "#build": [
-        "./"
-      ],
-      "#build/*": [
-        "./*"
-      ],
-      "#internal/nuxt/paths": [
-        "../node_modules/nuxt/dist/core/runtime/nitro/paths"
-      ],
-      "#vue-router": [
-        "./vue-router"
       ]
     },
     "lib": [

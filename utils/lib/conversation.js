@@ -1,5 +1,8 @@
 import { RealtimeUtils } from './utils.js';
 
+const MAX_ITEMS = 10; // アイテムの最大数を定義
+const MAX_RESPONSES = 10; // レスポンスの最大数を定義
+
 /**
  * Contains text and audio information about a item
  * Can also be used as a delta
@@ -26,6 +29,7 @@ export class RealtimeConversation {
       if (!this.itemLookup[newItem.id]) {
         this.itemLookup[newItem.id] = newItem;
         this.items.push(newItem);
+        this.checkItemLimit(); // アイテムの最大数をチェック
       }
       newItem.formatted = {};
       newItem.formatted.audio = new Int16Array(0);
@@ -147,6 +151,7 @@ export class RealtimeConversation {
       if (!this.responseLookup[response.id]) {
         this.responseLookup[response.id] = response;
         this.responses.push(response);
+        this.checkResponseLimit(); // レスポンスの最大数をチェック
       }
       return { item: null, delta: null };
     },
@@ -310,5 +315,29 @@ export class RealtimeConversation {
    */
   getItems() {
     return this.items.slice();
+  }
+
+  /**
+   * Checks if the number of items exceeds the maximum limit and removes the oldest items if necessary
+   */
+  checkItemLimit() {
+    while (this.items.length > MAX_ITEMS) {
+      const oldestItem = this.items.shift();
+      if (oldestItem) {
+        delete this.itemLookup[oldestItem.id];
+      }
+    }
+  }
+
+  /**
+   * Checks if the number of responses exceeds the maximum limit and removes the oldest responses if necessary
+   */
+  checkResponseLimit() {
+    while (this.responses.length > MAX_RESPONSES) {
+      const oldestResponse = this.responses.shift();
+      if (oldestResponse) {
+        delete this.responseLookup[oldestResponse.id];
+      }
+    }
   }
 }

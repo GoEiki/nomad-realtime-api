@@ -1,0 +1,29 @@
+{
+    "Hidden": true,
+    "Type": "SubTask",
+    "Alias":"ReplaceTest",
+    "TaskID": "ReplaceTest",
+    "Requirements": [
+        "message"
+    ],
+    "ToDo": {
+        "Method": "PostNomadEvent",
+        "Data": {
+            "event": "notify.event",
+            "data": {
+                "message": "{{message}}"
+            }
+        }
+    },
+    "Check": {
+        "Method": "GetNomadEvent",
+        "Data": {
+            "event": "message.event",
+            "data": {
+                "message": "confirm"
+            }
+        }
+    },
+    "Dependenceis": "null",
+    "Status": "Waiting"
+}

@@ -151,7 +151,7 @@ export default defineWebSocketHandler({
     //ユーザーIDが存在しなければ新しい接続を作成
     if (!users[userId]) {
       // OpenAIのRealtime APIとの接続
-      const APIurl = 'wss://api.openai.com/v1/realtime?model=gpt-4o-mini-realtime-preview-2024-12-17';
+      const APIurl = 'wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview';
       users[userId] = new User (
         new WebSocket(APIurl, {
           headers: {
@@ -220,14 +220,23 @@ export default defineWebSocketHandler({
     }
     const parsedMessage = JSON.parse(message.text());
     if(parsedMessage['type'] === 'nomad.event'){
-      console.log('nomad_event');
+      //console.log('nomad_event');
       if(parsedMessage['event']==='transfer.event'){
         users[userId].TransferClient(parsedMessage['data']['newClient']);
       }
+      if(parsedMessage['event']==='open.event'){
+
+      }
     }
     else{
-      // クライアントイベントはそのままRealtime APIに中継する
+      // CurrentClientのイベントはそのままRealtime APIに中継する
       if(users[userId].CurrentClient === peer.id){
+        if (users[userId].connection.readyState === WebSocket.OPEN) {
+          users[userId].connection.send(message.text());
+        }
+      }
+      //コンソールからのイベントは全てRealtime APIに中継する
+      else if(users[userId].consolepeers[peer.id]){
         if (users[userId].connection.readyState === WebSocket.OPEN) {
           users[userId].connection.send(message.text());
         }

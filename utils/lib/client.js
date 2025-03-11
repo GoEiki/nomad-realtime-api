@@ -308,6 +308,7 @@ export class RealtimeClient extends RealtimeEventHandler {
           },
         });
       } catch (e) {
+        /*//functionが設定されていない場合にエラーを自動送信しないようコメントアウト
         this.realtime.send('conversation.item.create', {
           item: {
             type: 'function_call_output',
@@ -315,8 +316,9 @@ export class RealtimeClient extends RealtimeEventHandler {
             output: JSON.stringify({ error: e.message }),
           },
         });
+        */
       }
-      this.createResponse();
+      //this.createResponse();
     };
 
     // Handlers to update internal conversation state
@@ -651,9 +653,6 @@ export class RealtimeClient extends RealtimeEventHandler {
   //Nomad Events送信関数
   sendNomadEvent(event) {
     this.realtime.send('nomad.event', event);
-  }
-  sendStateEvent(event) {
-    this.realtime.send('state.event', event);
   }
   /**
    * Utility for waiting for the next `conversation.item.appended` event to be triggered by the server

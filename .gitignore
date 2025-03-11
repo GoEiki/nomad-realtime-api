@@ -1,10 +1,19 @@
-#開発中
-StateStore.ts
-StateManager.ts
-APIClientForStateServer.ts
-state.ts
-#環境依存
-10.0.0.1.56-key.pem
-10.0.0.1.56.pem
-package.json
+# Node.js
+node_modules/
+.npm/
 
+# Nuxt
+.nuxt/
+.nitro/
+dist/
+.output/
+
+# 環境変数
+.env
+.env.*
+
+# OS・エディタ関連
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

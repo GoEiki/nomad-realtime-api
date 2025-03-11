@@ -1,7 +1,7 @@
 // nuxt.config.ts
 export default defineNuxtConfig({
   routeRules: {
-    '/ConsoleUItest':{ssr:false},
+    '/ConsoleUI':{ssr:false},
   },
   css: ['@/assets/styles/main.css'],
   compatibilityDate: '2024-12-06',
@@ -14,9 +14,11 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      DefaultIPAdress: '10.0.1.56:3000',
+      DefaultIPAdress: '10.0.1.71:3000',
       DefaultUserID: 'user123',
     },
-  },
+  }
+
+  
 
 })
