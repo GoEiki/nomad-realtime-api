@@ -50,7 +50,7 @@ npm run ssl
 表示されたURLをブラウザで開く
 
 # タスクフロー作成
-##　　0.はじめに
+## 0. はじめに
 ### ファイル作成
 - assets/basicに以下の形式のファイルを作成するとStateManagerにタスクを設定することができる。
 - ファイルは.json .jsに対応しているが、改行、コメントアウト、型チェックができる .jsがおすすめ。
@@ -72,7 +72,7 @@ npm run ssl
     - テキスト対話でデバッグする場合Controlsで'As User'を選択することでユーザーとして対話できる
 ### その他注意点
 - バグ報告・実装して欲しい機能は田宮までお願いします。
-## 1.Task Interface
+## 1. Task Interface
 ```
 interface Task {
     Hidden?: boolean;
@@ -204,7 +204,7 @@ export const Task_MessageTest = {
 ```
 Flowの中にSubTaskを作成する。以後同様にTaskFlow、SubTaskを追加する。
 
-## 3.そのほか
+## 3. そのほか
 ### Replace
 すでに作成したTaskFlowを使いまわしたい時に、Replaceメソッドにより置換できる
 ```
