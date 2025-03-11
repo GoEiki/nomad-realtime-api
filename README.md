@@ -43,6 +43,10 @@ runtimeConfig: {
 ```
 ※ローカルネットワーク内のみ動作
 
+## 依存関係のインストール
+```
+npm install
+```
 ## 実行
 ```
 npm run ssl
