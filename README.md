@@ -4,12 +4,12 @@
 ```
 git clone https://github.com/tamiyaayumu/nomad-realtime-api
 ```
-### 自己署名証明書の発行
-1. 秘密鍵の生成
+### ~~自己署名証明書の発行~~
+1. ~~秘密鍵の生成~~
 ```
 openssl genrsa 2048 > nomad.key
 ```
-2. 自己署名証明書の発行
+2. ~~自己署名証明書の発行~~
 ```
 openssl req -new -x509 -days 3650 -key nomad.key -sha512 -out nomad.crt
 ```
@@ -25,7 +25,7 @@ echo "export OPENAI_API_KEY='yourkey'" >> ~/.zshrc
 source ~/.zshrc
 ```
 ### 設定ファイルへの書き込み
-package.jsonの下記部分に証明書と秘密鍵のパスを記載
+~~package.jsonの下記部分に証明書と秘密鍵のパスを記載~~
 ```
 "scripts": {
 "ssl": "nuxt dev --https --ssl-cert <enter cerfiticate file path> --ssl-key <enter key path> --host 0.0.0.0 --port 3000",
@@ -49,11 +49,11 @@ npm run ssl
 ```
 表示されたURLをブラウザで開く
 
-# タスクフロー作成
+# タスクフロー
 ## 0. はじめに
 ### ファイル作成
 - assets/basicに以下の形式のファイルを作成するとStateManagerにタスクを設定することができる。
-- ファイルは.json .jsに対応しているが、改行、コメントアウト、型チェックができる .jsがおすすめ。
+- ファイルは.json .jsに対応しているが、改行&コメントアウト&型チェックができる .jsがおすすめ。
 - タスクの識別は後述のTaskIDで行うためファイル名やオブジェクト名に特に指定はない。
 ### 実行手順
 - https://ipadress:port/ConsoleUI にアクセス
@@ -71,7 +71,7 @@ npm run ssl
     - 音声対話でデバッグする場合https://ipadress:port/ClientUI にアクセスし接続する
     - テキスト対話でデバッグする場合Controlsで'As User'を選択することでユーザーとして対話できる
 ### その他注意点
-- バグ報告・実装して欲しい機能は田宮までお願いします。
+- 
 ## 1. Task Interface
 ```
 interface Task {
@@ -107,7 +107,7 @@ interface ToDo {
 実際に行われる関数を記述する。Methodに実行したい関数。Dataは引数。（TaskExample.jsを参照）
 ToDoは即時実行される関数、Checkは特定の動作を待つ関数を実装する。
 SubTaskの場合は両方必須だが、"null"をメソッドに指定することでスキップできる。
-### Dependences
+### Dependenceis
 ```
 Dependenceis: string;
 ```
@@ -120,7 +120,7 @@ Status: 'Waiting' | 'Completed'; //タスクの状態。必須
 Requirements?: string[]; //必要な引数を定義
 Flow?: Task[]; //TaskFlowの場合この中にネストする。TaskFlowの場合は必須
 ```
-## 2.　基本的な作り方
+## 2. 基本的な作り方
 ### 型チェックを追加(.jsのみ)
 ```
 // @ts-check
