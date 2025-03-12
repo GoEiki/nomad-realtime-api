@@ -5,7 +5,7 @@ const clientCanvasRef = ref<HTMLCanvasElement | undefined>(undefined);
 const serverCanvasRef = ref<HTMLCanvasElement | undefined>(undefined);
 const realtimestore = RealtimeStore(); // Pinia ストアを取得
 const { connectConversation, disconnectConversation, setClient, ConversationHandler, setCanvas } = ConnectUser();
-const { connect, disconnect, sendMessage, setOnMessageHandler, isConnected } = useWebSocket();
+const { connect, disconnect, sendMessage, isConnected } = useWebSocket();
 const usernameInput = ref('');
 const username = ref<string | null>(null);
 onMounted(() => {
@@ -13,20 +13,16 @@ onMounted(() => {
     if (savedUsername) {
         username.value = savedUsername;
     }
-    if(username.value){
+    if (username.value) {
         setClient(username.value);
     }
-    else{
+    else {
         setClient();
     }
     ConversationHandler();
     if (clientCanvasRef.value && serverCanvasRef.value) {
         setCanvas(clientCanvasRef.value, serverCanvasRef.value);
     }
-    setOnMessageHandler((message) => {
-        console.log('message', message);
-        realtimestore.client?.sendNomadEvent(JSON.parse(message.data));
-    });
     watch(realtimestore.NomadEvents, () => {
         if (realtimestore.NomadEvents.length > 0) {
             const latestEvent = realtimestore.NomadEvents[realtimestore.NomadEvents.length - 1];
@@ -55,7 +51,17 @@ async function toggleWebSocketConnection() {
     if (isConnected.value) {
         disconnect();
     } else {
-        connect();
+        connect((message) => {
+            console.log('Relayed message:', message);
+            const data = (() => {
+                try {
+                    return JSON.parse(message.data);
+                } catch {
+                    return { event: "message.event", data: { message: message.data } };
+                }
+            })(); 
+            realtimestore.client?.sendNomadEvent(data);
+        });
     }
 }
 async function toggleConnection() {

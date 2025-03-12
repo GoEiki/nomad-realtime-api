@@ -2,7 +2,7 @@ export const useWebSocket = () => {
     let ws: WebSocket | null = null;
     let isConnected = ref(false);
 
-    function connect() {
+    function connect(handler: (event: MessageEvent) => void) {
         ws = new WebSocket("ws://localhost:8765");
 
         ws.onopen = () => {
@@ -12,6 +12,7 @@ export const useWebSocket = () => {
 
         ws.onmessage = (event) => {
             console.log("Received from server:", event.data);
+            handler(event);
         };
 
         ws.onerror = (error) => {
@@ -41,11 +42,6 @@ export const useWebSocket = () => {
         }
     }
 
-    function setOnMessageHandler(handler: (event: MessageEvent) => void) {
-        if (ws) {
-            ws.onmessage = handler;
-        }
-    }
 
-    return { connect, disconnect, sendMessage, setOnMessageHandler, isConnected };
+    return { connect, disconnect, sendMessage,  isConnected };
 }
