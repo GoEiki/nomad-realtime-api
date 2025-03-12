@@ -27,6 +27,7 @@ onMounted(() => {
         if (realtimestore.NomadEvents.length > 0) {
             const latestEvent = realtimestore.NomadEvents[realtimestore.NomadEvents.length - 1];
             if (latestEvent.event.event === 'motion.event') {
+                console.log('motion event:', latestEvent.event);
                 sendMessage(JSON.stringify(latestEvent.event));
             }
         }

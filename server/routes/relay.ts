@@ -75,6 +75,16 @@ class User {
     }
     });
   }
+  SendToCurentClient(message: string) {
+    if(this.CurrentClient === null){return;}
+    const peer= this.userpeers[this.CurrentClient].peer;
+    try {
+      peer.send(message);
+    }
+    catch (error) {
+      console.error("Error sending message:", error);
+    }
+  }
   //UserPeerが存在するか確認
   private hasUserPeer(id: string): boolean {
     return this.userpeers.hasOwnProperty(id);
@@ -244,6 +254,7 @@ export default defineWebSocketHandler({
     }
     // コンソールクライアントにメッセージを送信
     users[userId].SendToConsolePeers(message.text(), peer.id);
+    users[userId].SendToCurentClient(message.text());
   },
   close(peer) {
     if (!peer.websocket.url) {
