@@ -26,8 +26,8 @@ onMounted(() => {
     watch(realtimestore.NomadEvents, () => {
         if (realtimestore.NomadEvents.length > 0) {
             const latestEvent = realtimestore.NomadEvents[realtimestore.NomadEvents.length - 1];
-            if (latestEvent.event.event === 'motion.event') {
-                console.log('motion event:', latestEvent.event);
+            if (latestEvent.event.event === 'client.event') {
+                console.log('client event:', latestEvent.event);
                 sendMessage(JSON.stringify(latestEvent.event));
             }
         }
@@ -58,7 +58,7 @@ async function toggleWebSocketConnection() {
                 try {
                     return JSON.parse(message.data);
                 } catch {
-                    return { event: "message.event", data: { message: message.data } };
+                    return { event: "notify.event", data: { message: message.data } };
                 }
             })(); 
             realtimestore.client?.sendNomadEvent(data);

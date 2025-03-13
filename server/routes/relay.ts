@@ -79,6 +79,7 @@ class User {
     if(this.CurrentClient === null){return;}
     const peer= this.userpeers[this.CurrentClient].peer;
     try {
+      console.log('sending message to CurrentClient');
       peer.send(message);
     }
     catch (error) {
@@ -230,12 +231,14 @@ export default defineWebSocketHandler({
     }
     const parsedMessage = JSON.parse(message.text());
     if(parsedMessage['type'] === 'nomad.event'){
-      //console.log('nomad_event');
       if(parsedMessage['event']==='transfer.event'){
         users[userId].TransferClient(parsedMessage['data']['newClient']);
       }
       if(parsedMessage['event']==='open.event'){
 
+      }
+      if(parsedMessage['event']==='client.event'){
+        users[userId].SendToCurentClient(message.text());
       }
     }
     else{
@@ -254,7 +257,7 @@ export default defineWebSocketHandler({
     }
     // コンソールクライアントにメッセージを送信
     users[userId].SendToConsolePeers(message.text(), peer.id);
-    users[userId].SendToCurentClient(message.text());
+    
   },
   close(peer) {
     if (!peer.websocket.url) {
