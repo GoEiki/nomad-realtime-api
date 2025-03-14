@@ -7,7 +7,7 @@ export const StateManager = () => {
     const realtimestore = RealtimeStore();
     let basictasks: { [key: string]: Task } = {};
     const reloadqueue = ref<boolean>(false);
-    const TaskQueue = ref<Task>({ Type: 'TaskFlow', TaskID: 'TaskQueue', Dependenceis: null, Status: 'Waiting', Flow: [] });
+    const TaskQueue = ref<Task>({ Type: 'TaskFlow', TaskID: 'TaskQueue', Dependencies: null, Status: 'Waiting', Flow: [] });
     const Eventprocessor: { [key: string]: (event: ToDo) => boolean | Promise<boolean> } = {
         'null': (event: ToDo) => {
             return true;

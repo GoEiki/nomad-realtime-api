@@ -19,7 +19,7 @@
  * @property {string} TaskID
  * @property {ToDo} [ToDo]
  * @property {ToDo} [Check]
- * @property {string | null} Dependenceis
+ * @property {string | null} Dependencies
  * @property {TaskStatus} Status
  * @property {string[]} [Requirements]
  * @property {Task[]} [Flow]
@@ -49,7 +49,7 @@ export const Task_PostMessage_Example = {
             }
         }
     },
-    Dependenceis: "null",
+    Dependencies: "null",
     Status: "Waiting"
 }
 
@@ -76,7 +76,7 @@ export const Task_UpdateInstruciton_Example = {
     Check: {
         Method: "null"
     },
-    Dependenceis: "null",
+    Dependencies: "null",
     Status: "Waiting"
 }
 
@@ -94,7 +94,7 @@ export const Task_SetTaskHandler_Example = {
     Check: {
         Method: "null"
     },
-    Dependenceis: "Task_UpdateInstruciton_Example",//必ずUpdateInstrucitonに対応するタスクを設定してから実行
+    Dependencies: "Task_UpdateInstruciton_Example",//必ずUpdateInstrucitonに対応するタスクを設定してから実行
     Status: "Waiting"
 }
 
@@ -109,7 +109,7 @@ export const Task_ResetTaskHandler_Example = {
     Check: {
         Method: "null"
     },
-    Dependenceis: "Task_ResetInstruction_Example",//インストラクションも同時にリセット
+    Dependencies: "Task_ResetInstruction_Example",//インストラクションも同時にリセット
     Status: "Waiting"
 }
 
@@ -130,7 +130,7 @@ export const Task_Queuing_Example = {
     Check: {
         Method: "null"
     },
-    Dependenceis: "null",
+    Dependencies: "null",
     Status: "Waiting"
 }
 
@@ -152,7 +152,7 @@ export const Task_Replace_Example = {
     Check: {
         Method: "null"
     },
-    Dependenceis: "null",
+    Dependencies: "null",
     Status: "Waiting"
 }
 
@@ -172,7 +172,7 @@ export const Task_CreateResponse_Example = {
     Check: {
         Method: "Wait"//SetTaskHandlerで登録する場合は待機。そうでない場合は"null"を指定
     },
-    Dependenceis: "null",
+    Dependencies: "null",
     Status: "Waiting"
 }
 
@@ -190,7 +190,7 @@ export const Task_CreateResponse2_Example = {
     Check: {
         Method: "Wait"//SetTaskHandlerで登録する場合は待機。そうでない場合は"null"を指定
     },
-    Dependenceis: "null",
+    Dependencies: "null",
     Status: "Waiting"
 }
 

@@ -19,7 +19,7 @@
  * @property {string} TaskID
  * @property {ToDo} [ToDo]
  * @property {ToDo} [Check]
- * @property {string | null} Dependenceis
+ * @property {string | null} Dependencies
  * @property {TaskStatus} Status
  * @property {string[]} [Requirements]
  * @property {Task[]} [Flow]
@@ -30,7 +30,7 @@ export const Task_ClientTest = {
     Type: "TaskFlow",
     Alias: "ClientTest",
     TaskID: "Task_ClientTest",
-    Dependenceis: "null",
+    Dependencies: "null",
     Status: "Waiting",
     Flow: [
         {
@@ -49,7 +49,7 @@ export const Task_ClientTest = {
             Check: {
                 Method: "null"
             },
-            Dependenceis: "null",
+            Dependencies: "null",
             Status: "Waiting"
         }   
     ]

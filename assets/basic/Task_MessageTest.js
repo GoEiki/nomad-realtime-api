@@ -19,7 +19,7 @@
  * @property {string} TaskID
  * @property {ToDo} [ToDo]
  * @property {ToDo} [Check]
- * @property {string | null} Dependenceis
+ * @property {string | null} Dependencies
  * @property {TaskStatus} Status
  * @property {string[]} [Requirements]
  * @property {Task[]} [Flow]
@@ -30,7 +30,7 @@ export const Task_MessageTest = {
     Type: "TaskFlow",
     Alias: "MessageTest",
     TaskID: "Task_MessageTest",
-    Dependenceis: "null",
+    Dependencies: "null",
     Status: "Waiting",
     Flow: [
         {
@@ -55,14 +55,14 @@ export const Task_MessageTest = {
                     }
                 }
             },
-            Dependenceis: "null",
+            Dependencies: "null",
             Status: "Waiting"
         },
         {
             Type: "TaskFlow",
             Alias: "SubFlow",
             TaskID: "TF1",
-            Dependenceis: "T1",
+            Dependencies: "T1",
             Status: "Waiting",
             Flow: [
                 {
@@ -82,7 +82,7 @@ export const Task_MessageTest = {
                     Check: {
                         Method: "null"
                     },
-                    Dependenceis: "null",
+                    Dependencies: "null",
                     Status: "Waiting"
                 },
                 {
@@ -107,7 +107,7 @@ export const Task_MessageTest = {
                             }
                         }
                     },
-                    Dependenceis: "T2",
+                    Dependencies: "T2",
                     Status: "Waiting"
                 }
             ]
@@ -134,7 +134,7 @@ export const Task_MessageTest = {
                     }
                 }
             },
-            Dependenceis: "TF1",
+            Dependencies: "TF1",
             Status: "Waiting"
         }
     ]

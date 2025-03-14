@@ -138,10 +138,10 @@ const parseTaskFlow = (taskFlow: any) => {
         type: 'custom', // CustomNodeを使用
 
       });
-      if (task.Dependenceis && task.Dependenceis !== 'null') {
+      if (task.Dependencies && task.Dependencies !== 'null') {
         edges.value.push({
-          id: `${task.Dependenceis}-${task.TaskID}`,
-          source: task.Dependenceis,
+          id: `${task.Dependencies}-${task.TaskID}`,
+          source: task.Dependencies,
           target: task.TaskID
         });
       }

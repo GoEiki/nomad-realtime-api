@@ -14,7 +14,7 @@ export interface Task {
     TaskID: string;
     ToDo?: ToDo
     Check?: ToDo;
-    Dependenceis: string | null;
+    Dependencies: string | null;
     Status: 'Waiting' | 'Completed';
     Requirements?: string[];
     Flow?: Task[];
@@ -27,10 +27,10 @@ export interface NomadEvent {
 export const StateManagerUtils = () => {
     function TaskScheduler(CurrentTask: any): Task | null {
         const checkDependencies = (task: Task): boolean => {
-            if (task.Dependenceis === null || task.Dependenceis === "null") {
+            if (task.Dependencies === null || task.Dependencies === "null") {
                 return true;
             }
-            const dependencies = task.Dependenceis.split(',');
+            const dependencies = task.Dependencies.split(',');
             return dependencies.every(dep => {
                 const depTask = findTaskById(CurrentTask, dep);
                 return depTask && depTask.Status === 'Completed';
@@ -79,7 +79,7 @@ export const StateManagerUtils = () => {
         if (taskFlow.Type === 'TaskFlow' && taskFlow.Flow) {
             taskFlow.Flow = taskFlow.Flow.map(subTask => {
                 if (subTask.TaskID === taskId) {
-                    const NewTask: Task={ Type: 'TaskFlow', TaskID: taskId, Dependenceis: subTask.Dependenceis, Status: 'Waiting', Flow: [newTask]};
+                    const NewTask: Task={ Type: 'TaskFlow', TaskID: taskId, Dependencies: subTask.Dependencies, Status: 'Waiting', Flow: [newTask]};
                     return NewTask; // 該当要素を置き換え
                 }
                 if (subTask.Type === 'TaskFlow') {
@@ -142,8 +142,8 @@ export const StateManagerUtils = () => {
         const convertTask = (task: Task): Task => {
             const newTask = { ...task };
             newTask.TaskID = generateUniqueId(task.TaskID);
-            if (newTask.Dependenceis) {
-                newTask.Dependenceis = newTask.Dependenceis.split(',')
+            if (newTask.Dependencies) {
+                newTask.Dependencies = newTask.Dependencies.split(',')
                     .map(dep => generateUniqueId(dep))
                     .join(',');
             }

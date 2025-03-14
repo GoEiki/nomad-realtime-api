@@ -85,7 +85,7 @@ interface Task {
     TaskID: string;
     ToDo?: ToDo
     Check?: ToDo;
-    Dependenceis: string;
+    Dependencies: string;
     Status: 'Waiting' | 'Completed';
     Requirements?: string[];
     Flow?: Task[];
@@ -111,9 +111,9 @@ interface ToDo {
 実際に行われる関数を記述する。Methodに実行したい関数。Dataは引数。（TaskExample.jsを参照）
 ToDoは即時実行される関数、Checkは特定の動作を待つ関数を実装する。
 SubTaskの場合は両方必須だが、"null"をメソッドに指定することでスキップできる。
-### Dependenceis
+### Dependencies
 ```
-Dependenceis: string;
+Dependencies: string;
 ```
 依存するTaskIDを記述。ない場合は"null"。必須
 ### そのほか
@@ -148,7 +148,7 @@ Flow?: Task[]; //TaskFlowの場合この中にネストする。TaskFlowの場�
  * @property {string} TaskID
  * @property {ToDo} [ToDo]
  * @property {ToDo} [Check]
- * @property {string | null} Dependenceis
+ * @property {string | null} Dependencies
  * @property {TaskStatus} Status
  * @property {string[]} [Requirements]
  * @property {Task[]} [Flow]
@@ -163,7 +163,7 @@ export const Task_MessageTest = {
     Type: "TaskFlow",
     Alias: "SimpleExample",
     TaskID: "SimpleExample",
-    Dependenceis: "null",
+    Dependencies: "null",
     Status: "Waiting",
     Flow: []
 };
@@ -175,7 +175,7 @@ export const Task_MessageTest = {
     Type: "TaskFlow",
     Alias: "SimpleExample",
     TaskID: "SimpleExample",
-    Dependenceis: "null",
+    Dependencies: "null",
     Status: "Waiting",
     Flow: [
         {
@@ -200,7 +200,7 @@ export const Task_MessageTest = {
                     }
                 }
             },
-            Dependenceis: "null",//依存タスクなし
+            Dependencies: "null",//依存タスクなし
             Status: "Waiting"
         }
     ]
@@ -228,7 +228,7 @@ Flowの中にSubTaskを作成する。以後同様にTaskFlow、SubTaskを追加
     Check: {
         Method: "null"//チェックは必要なし
     },
-    Dependenceis: "null",
+    Dependencies: "null",
     Status: "Waiting"
 }
 ```
@@ -260,7 +260,7 @@ assets/basicに作成したファイルのみ
             }
         }
     },
-    "Dependenceis": "null",
+    "Dependencies": "null",
     "Status": "Waiting"
 }
 ```
@@ -282,7 +282,7 @@ assets/basicに作成したファイルのみ
     Check: {
         Method: "null"
     },
-    Dependenceis: "null",
+    Dependencies: "null",
     Status: "Waiting"
 ```
 

@@ -19,7 +19,7 @@
  * @property {string} TaskID
  * @property {ToDo} [ToDo]
  * @property {ToDo} [Check]
- * @property {string | null} Dependenceis
+ * @property {string | null} Dependencies
  * @property {TaskStatus} Status
  * @property {string[]} [Requirements]
  * @property {Task[]} [Flow]
@@ -30,7 +30,7 @@ export const Task_ConversationTest = {
     Type: "TaskFlow",
     Alias: "ConversationTest（丸を描くタスク）",
     TaskID: "ConversationTest",
-    Dependenceis: "null",
+    Dependencies: "null",
     Status: "Waiting",
     Flow: [
         {
@@ -52,7 +52,7 @@ export const Task_ConversationTest = {
             Check: {
                 Method: "null"
             },
-            Dependenceis: "null",
+            Dependencies: "null",
             Status: "Waiting"
         },
         {
@@ -68,14 +68,14 @@ export const Task_ConversationTest = {
             Check: {
                 Method: "null"
             },
-            Dependenceis: "updateinstruction",
+            Dependencies: "updateinstruction",
             Status: "Waiting"
         },
         {
             Type: "TaskFlow",
             Alias: "MainTaskFlow",
             TaskID: "maintaskflow",
-            Dependenceis: "settaskhandler",
+            Dependencies: "settaskhandler",
             Status: "Waiting",
             Flow: [
                 {
@@ -93,7 +93,7 @@ export const Task_ConversationTest = {
                     Check: {
                         Method: "Wait"
                     },
-                    Dependenceis: "null",
+                    Dependencies: "null",
                     Status: "Waiting"
                 },
                 {
@@ -111,7 +111,7 @@ export const Task_ConversationTest = {
                     Check: {
                         Method: "Wait"
                     },
-                    Dependenceis: "Task1",
+                    Dependencies: "Task1",
                     Status: "Waiting"
                 },
                 {
@@ -129,7 +129,7 @@ export const Task_ConversationTest = {
                     Check: {
                         Method: "Wait"
                     },
-                    Dependenceis: "Task2",
+                    Dependencies: "Task2",
                     Status: "Waiting"
                 }
             ]
@@ -147,7 +147,7 @@ export const Task_ConversationTest = {
             Check: {
                 Method: "null"
             },
-            Dependenceis: "maintaskflow",
+            Dependencies: "maintaskflow",
             Status: "Waiting"
         },
         {
@@ -160,7 +160,7 @@ export const Task_ConversationTest = {
             Check: {
                 Method: "null"
             },
-            Dependenceis: "resetinstruction",
+            Dependencies: "resetinstruction",
             Status: "Waiting"
         }
     ]
