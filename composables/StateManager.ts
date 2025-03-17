@@ -368,6 +368,14 @@ export const StateManager = () => {
         tasks.forEach(task => {
             basictasks[task.TaskID] = task;
         });
+        for (const key in realtimestore.RelayStatus.UserPeers) {
+            console.log(`UserPeers:${key}:${realtimestore.RelayStatus.UserPeers[key]}`);
+            const username = realtimestore.RelayStatus.UserPeers[key];
+            if (basictasks["defaultconfig"].ToDo?.Data) {
+                basictasks["defaultconfig"].ToDo!.Data[username + '_ID'] = key;
+                console.log(basictasks["defaultconfig"].ToDo!.Data);
+            }
+        }
         console.log(basictasks);
     }
 
