@@ -19,7 +19,7 @@
  * @property {string} TaskID
  * @property {ToDo} [ToDo]
  * @property {ToDo} [Check]
- * @property {string | null} Dependenceis
+ * @property {string | null} Dependencies
  * @property {TaskStatus} Status
  * @property {string[]} [Requirements]
  * @property {Task[]} [Flow]
@@ -30,7 +30,7 @@ export const Task_Test1 = {
     Type: "TaskFlow",
     Alias: "テスト",
     TaskID: "Task_Test1",
-    Dependenceis: "null",
+    Dependencies: "null",
     Status: "Waiting",
     Flow: [
         {
@@ -48,7 +48,7 @@ export const Task_Test1 = {
             Check: {
                 Method: "null"
             },
-            Dependenceis: "null",
+            Dependencies: "null",
             Status: "Waiting"
         },
         {
@@ -58,7 +58,7 @@ export const Task_Test1 = {
             ToDo: {
                 Method: "PostNomadEvent",
                 Data: {
-                    event: "motion.event",
+                    event: "client.event",
                     data: {
                         motion:"Agentout"
                     }//{event:"motion.event",data:{motion:"Agentout"}}
@@ -67,7 +67,7 @@ export const Task_Test1 = {
             Check: {
                 Method: "null",
             },
-            Dependenceis: "Task_Test1_Speech",
+            Dependencies: "Task_Test1_Speech",
             Status: "Waiting"
         },
         //Method:Transfer
@@ -87,7 +87,7 @@ export const Task_Test1 = {
             Check: {
                 Method: "null",
             },
-            Dependenceis: "Task_Test1_agentout",
+            Dependencies: "Task_Test1_agentout",
             Status: "Waiting"
         },
     ]

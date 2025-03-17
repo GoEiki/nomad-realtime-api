@@ -1,12 +1,14 @@
 <template>
     <div class="voice-interaction-container">
       <MultiConversationClientUI />
-        <Controls />
+        <ControlsforMultiConversation />
       
     </div>
 </template>
   
 <script>
+import ControlsforMultiConversation from '~/components/ControlsforMultiConversation.vue';
+
 
 
 export default {
