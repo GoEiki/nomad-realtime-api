@@ -240,6 +240,7 @@ export default defineWebSocketHandler({
       if(parsedMessage['event']==='client.event'){
         users[userId].SendToCurentClient(message.text());
       }
+      users[userId].SendToConsolePeers(message.text(), peer.id);
     }
     else{
       // CurrentClientのイベントはそのままRealtime APIに中継する
@@ -247,16 +248,18 @@ export default defineWebSocketHandler({
         if (users[userId].connection.readyState === WebSocket.OPEN) {
           users[userId].connection.send(message.text());
         }
+        //users[userId].SendToConsolePeers(message.text(), peer.id);
       }
       //コンソールからのイベントは全てRealtime APIに中継する
       else if(users[userId].consolepeers[peer.id]){
         if (users[userId].connection.readyState === WebSocket.OPEN) {
           users[userId].connection.send(message.text());
         }
+        users[userId].SendToConsolePeers(message.text(), peer.id);
       }
     }
     // コンソールクライアントにメッセージを送信
-    users[userId].SendToConsolePeers(message.text(), peer.id);
+    //users[userId].SendToConsolePeers(message.text(), peer.id);
     
   },
   close(peer) {

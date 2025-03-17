@@ -23,7 +23,7 @@ export const RealtimeStore = defineStore('messages', {
     clientCanvas: undefined as HTMLCanvasElement | undefined, // クライアントの波形描画キャンバス
     serverCanvas: undefined as HTMLCanvasElement | undefined, // サーバーの波形描画キャンバス
     isConnected: false, // Realtime API に接続状態
-    isMuted: false, // ミュート状態
+    isMuted: true, // ミュート状態
     items: [] as ItemType[], // 対話イベントアイテム
     NomadEvents:[] as RealtimeEvent[],// Nomadのイベント
     FunctionEvents:[] as RealtimeEvent[],// FunctionCall用イベント
