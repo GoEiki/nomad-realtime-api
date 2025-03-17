@@ -80,15 +80,32 @@ function CreateResponse() {
             client?.realtime.send('conversation.item.create', data);
             client?.realtime.send('response.create', {});
         }
-        else { 
+        else {
             console.error('Invalid option');
         }
     }
-    else{
+    else {
         client?.createResponse();
     }
     inputText.value = '';
 
+}
+function CreateResponsewithConstantInstruction(instructions: string) {
+    const client = realtimestore.client;
+    const data = {
+        item: {
+            type: "message",
+            role: "system",
+            content: [
+                {
+                    type: "input_text",
+                    text: instructions
+                }
+            ]
+        }
+    }
+    client?.realtime.send('conversation.item.create', data);
+    client?.createResponse();
 }
 
 </script>
@@ -106,86 +123,90 @@ function CreateResponse() {
             {{ option }}
         </button>
     </div>
+    <div>
+        <button @click="CreateResponsewithConstantInstruction('発話する前に”オガワさん”って呼びかけてから、話してください')">小川さんに話してください</button>
+        <button @click="CreateResponsewithConstantInstruction('発話する前に”タミヤさん”と呼びかけてから、話してください')">ゲストに話しかけてください</button>
+    </div>
 </template>
 
 <style scoped>
 .custom-button {
-  background-color: #4CAF50;
-  font-size: 10px;
-  padding: 8px;
-  border-radius: 10px;
+    background-color: #4CAF50;
+    font-size: 10px;
+    padding: 8px;
+    border-radius: 10px;
 }
 
 .large-input {
-  flex: 1;
-  padding: 16px;
-  font-size: 18px;
-  border: 2px solid #ccc;
-  border-radius: 10px 0 0 10px;
-  box-sizing: border-box;
-  border-right: none;
+    flex: 1;
+    padding: 16px;
+    font-size: 18px;
+    border: 2px solid #ccc;
+    border-radius: 10px 0 0 10px;
+    box-sizing: border-box;
+    border-right: none;
 }
 
 .input-container {
-  display: flex;
-  width: 98%;
-  margin: 12px;
+    display: flex;
+    width: 98%;
+    margin: 12px;
 }
 
 .send-button {
-  padding: 16px;
-  font-size: 18px;
-  background-color: #4CAF50;
-  color: white;
-  border: 2px solid #4CAF50;
-  border-radius: 0 10px 10px 0;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 16px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: 2px solid #4CAF50;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .send-button:hover {
-  background-color: #45a049;
-  transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    background-color: #45a049;
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 send-button:active {
-  background-color: #3e8e41;
-  transform: scale(0.95);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #3e8e41;
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .swipe-selector {
-  display: flex;
-  justify-content: space-between;
-  margin: 12px 0;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  padding: 8px;
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 8px;
 }
 
 .swipe-selector button {
-  flex: 1;
-  padding: 12px;
-  margin: 0 4px;
-  background-color: #9c9c9c;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    flex: 1;
+    padding: 12px;
+    margin: 0 4px;
+    background-color: #9c9c9c;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .swipe-selector button.active {
-  background-color: #4CAF50;
-  color: white;
+    background-color: #4CAF50;
+    color: white;
 }
 
 .swipe-selector button:hover {
-  background-color: #ddd;
+    background-color: #ddd;
 }
 
 .slider {
-  width: 100%;
-  margin: 12px 0;
+    width: 100%;
+    margin: 12px 0;
 }
 </style>
