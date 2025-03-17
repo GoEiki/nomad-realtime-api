@@ -247,14 +247,28 @@ export const StateManager = () => {
 
             return true;
         },
-        'Motion': (event: ToDo) => {
-            realtimestore.client?.sendNomadEvent({ event: "motion.event", data: event.Data });
-            return true;
-        },
         'ReloadBasicTasks': async (event: ToDo) => {
             await reloadtasks();
             return true;
-        }
+        },
+        'Transfer': (event: ToDo) => {
+            if (event.Data.newClientID) {
+                realtimestore.client?.sendNomadEvent({ event: "transfer.event", data: { newClient: event.Data.newClientID } });
+                return true;
+            }
+            return false;
+        },
+        'CheckRelayStatus': (event: ToDo) => {
+            if (event.Data.ClientName) {
+                for (const key in realtimestore.RelayStatus.UserPeers) {
+                    if (realtimestore.RelayStatus.UserPeers[key] === event.Data.ClientName) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+
+        },
 
 
     }
@@ -365,6 +379,14 @@ export const StateManager = () => {
                     realtimestore.RelayStatus.UserPeers = latestEvent.event.data.userpeers;
                     realtimestore.RelayStatus.ConsolePeers = latestEvent.event.data.consolepeers;
                     realtimestore.RelayStatus.CurrentClient = latestEvent.event.data.CurrentClient;
+                    for (const key in realtimestore.RelayStatus.UserPeers) {
+                        console.log(`UserPeers:${key}:${realtimestore.RelayStatus.UserPeers[key]}`);
+                        const username = realtimestore.RelayStatus.UserPeers[key];
+                        if (basictasks["defaultconfig"].ToDo?.Data) {
+                            basictasks["defaultconfig"].ToDo!.Data[username + '_ID'] = key;
+                            console.log(basictasks["defaultconfig"].ToDo!.Data);
+                        }
+                    }
                 }
                 else if (latestEvent.event.event === 'control.event') {
                     await Eventprocessor[latestEvent.event.data.Method]({ Method: latestEvent.event.data.Method, Data: latestEvent.event.data.Data });
