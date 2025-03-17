@@ -7,6 +7,7 @@
         <li><NuxtLink to="/">UserUI</NuxtLink></li>
         <li><NuxtLink to="/ConsoleUI">ConsoleUI</NuxtLink></li>
         <li><NuxtLink to="/StateManager">StateManager</NuxtLink></li>
+        <li><NuxtLink to="/MultiConversation">MultiConversation</NuxtLink></li>
       </ul>
     </nav>
     </header>

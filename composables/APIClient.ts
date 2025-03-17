@@ -19,6 +19,17 @@ export const ConnectUser = () => {
         await wavRecorder.record((data) => client.appendInputAudio(data.mono));
         realtimestore.isConnected = true;
     };
+    async function connectMultiConversation() {
+        const client = realtimestore.client;
+        const wavRecorder = realtimestore.wavRecorder;
+        const wavStreamPlayer = realtimestore.wavStreamPlayer;
+        if (!client || !wavRecorder || !wavStreamPlayer) return;
+        await wavRecorder.begin();
+        await wavStreamPlayer.connect();
+        await client.connect();
+        await wavRecorder.record((data) => client.storeInputAudio(data.mono));
+        realtimestore.isConnected = true;
+    };
     // Realtime APIから切断・オーディオ終了
     async function disconnectConversation() {
         const client = realtimestore.client;
@@ -167,6 +178,7 @@ export const ConnectUser = () => {
     }
     return {
         connectConversation,
+        connectMultiConversation,
         disconnectConversation,
         setClient,
         ConversationHandler,

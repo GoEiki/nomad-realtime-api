@@ -594,6 +594,26 @@ export class RealtimeClient extends RealtimeEventHandler {
     return true;
   }
 
+    /**複数人対話のためバッファを保持する部分を復活
+   * Appends user audio to the existing audio buffer
+   * @param {Int16Array|ArrayBuffer} arrayBuffer
+   * @returns {true}
+   */
+    storeInputAudio(arrayBuffer) {
+      if (arrayBuffer.byteLength > 0) {
+        this.realtime.send('input_audio_buffer.append', {
+          audio: RealtimeUtils.arrayBufferToBase64(arrayBuffer),
+        });
+        
+        this.inputAudioBuffer = RealtimeUtils.mergeInt16Arrays(
+          this.inputAudioBuffer,
+          arrayBuffer,
+        );
+        
+      }
+      return true;
+    }
+
   /**
    * Forces a model response generation
    * @returns {true}

@@ -1,7 +1,7 @@
 import { RealtimeUtils } from './utils.js';
 
-const MAX_ITEMS = 10; // アイテムの最大数を定義
-const MAX_RESPONSES = 10; // レスポンスの最大数を定義
+const MAX_ITEMS = 100; // アイテムの最大数を定義
+const MAX_RESPONSES = 100; // レスポンスの最大数を定義
 
 /**
  * Contains text and audio information about a item
