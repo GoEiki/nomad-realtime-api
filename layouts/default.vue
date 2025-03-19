@@ -14,10 +14,33 @@
     <main>
       <NuxtPage />
     </main>
+    <footer>
+      <p :class="{ active: isTabActive, inactive: !isTabActive }">
+        {{ isTabActive ? 'ACTIVE' : 'INACTIVE' }}
+      </p>
+    </footer>
   </div>
 </template>
 
 <script>
+export default {
+  data() {
+    return {
+      isTabActive: true, // タブがアクティブかどうかを管理
+    };
+  },
+  mounted() {
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+  },
+  beforeDestroy() {
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+  },
+  methods: {
+    handleVisibilityChange() {
+      this.isTabActive = document.visibilityState === 'visible';
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -34,5 +57,19 @@ nav ul {
 }
 nav li {
   margin: 0;
+}
+footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: gray;
+}
+footer p.active {
+  color: green;
+  font-weight: bold;
+}
+footer p.inactive {
+  color: red;
+  font-weight: bold;
 }
 </style>
