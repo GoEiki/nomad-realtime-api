@@ -225,7 +225,7 @@ export const Motion = {
 
 /* その他Checkメソッド */
 
-/* 指定の時間(ms)待つとCompleted */
+/* 指定の時間(ms)待つとCompleted !!!StateManagerが非アクティブタブになっている場合正常に機能しない場合があります。!!!*/
 /** @type {ToDo} */
 export const WaitUntil = {
     Method:"WaitUntil",
