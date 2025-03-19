@@ -10,7 +10,7 @@ const options = ['As User', 'Instruction', 'TextOnly', 'Direct']; // 入力オ�
 const selectedOption = ref(options[0]); // 選択されたオプションを保持
 
 // コマンド送信関数 (旧: sendCommand → 新: sendcomu)
-async function sendcomu(target: 'ogawa' | 'guest') {
+async function sendcomu(target: 'ogawa' | 'kyaku') {
     let command = target === 'ogawa' ? "comuu,hidari" : "comuu,baibai";
 
     try {
@@ -19,7 +19,7 @@ async function sendcomu(target: 'ogawa' | 'guest') {
         });
 
         console.log("Command sent successfully:", response.data);
-    } catch (error) {
+    } catch (error : any) {
         console.error("Failed to send command:", error.message);
     }
 }
@@ -47,7 +47,7 @@ function CreateResponse() {
 }
 
 // メッセージ送信とコマンド送信を統合
-function CreateResponsewithConstantInstruction(instructions: string, target: 'ogawa' | 'guest') {
+function CreateResponsewithConstantInstruction(instructions: string, target: 'ogawa' | 'kyaku') {
     const client = realtimestore.client;
     const data = {
         item: {
