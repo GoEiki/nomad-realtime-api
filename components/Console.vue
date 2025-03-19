@@ -33,10 +33,20 @@ function transfer(name:string,id:string) {
     client.sendNomadEvent({ event: 'Task_TransferBasic',data:{newDeviceName:name,newClientID:id} });
   }
 }
+function toggleAPIconnection() {
+  if (realtimestore.RelayStatus.APIconnection) {
+    realtimestore.client?.sendNomadEvent({ event: 'close.event' });
+  } else {
+    realtimestore.client?.sendNomadEvent({ event: 'open.event' });
+  }
+}
 </script>
 <template>
       <button @click="toggleConnection":style="{backgroundColor: !realtimestore.isConnected ? '#4CAF50' : '#cc4d4d', color: '#fff'}">
         {{ realtimestore.isConnected ? '切断' : '接続' }}
+      </button>
+      <button @click="toggleAPIconnection":style="{backgroundColor: !realtimestore.RelayStatus.APIconnection ? '#007bff' : '#cc4d4d', color: '#fff'}">
+        {{ realtimestore.RelayStatus.APIconnection ? 'API CLOSE' : 'API OPEN' }}
       </button>
       <button @click="realtimestore.clearState">
         クリア
