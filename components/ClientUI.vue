@@ -58,7 +58,7 @@ async function toggleWebSocketConnection() {
                 try {
                     return JSON.parse(message.data);
                 } catch {
-                    return { event: "notify.event", data: { message: message.data } };
+                    return { event: "message.event", data: { message: message.data } };
                 }
             })(); 
             realtimestore.client?.sendNomadEvent(data);
