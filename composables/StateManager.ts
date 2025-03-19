@@ -80,9 +80,12 @@ export const StateManager = () => {
         'UpdateInstruction': (event: ToDo) => {
             if (event.Data.instructions) {
                 realtimestore.client?.updateSession({ instructions: event.Data.instructions });
+                notify('UpdateInstruction called');
                 return true;
             }
+            
             return false;
+            
         },
         'CreateResponse': (event: ToDo) => {
             if (event.Data) {
@@ -223,9 +226,12 @@ export const StateManager = () => {
         'UpdateSession': (event: ToDo) => {
             if (event.Data) {
                 realtimestore.client?.updateSession(event.Data);
+                notify('UpdateSession called');
                 return true;
             }
+            
             return false;
+            
         },
         'ChangeTurnEndType': (event: ToDo) => {
             console.log('ChangeTurnEndType called');
@@ -249,6 +255,7 @@ export const StateManager = () => {
         },
         'ReloadBasicTasks': async (event: ToDo) => {
             await reloadtasks();
+            notify('ReloadBasicTasks called');
             return true;
         },
         'Transfer': (event: ToDo) => {
@@ -257,18 +264,7 @@ export const StateManager = () => {
                 return true;
             }
             return false;
-        },
-        'CheckRelayStatus': (event: ToDo) => {
-            if (event.Data.ClientName) {
-                for (const key in realtimestore.RelayStatus.UserPeers) {
-                    if (realtimestore.RelayStatus.UserPeers[key] === event.Data.ClientName) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-
-        },
+        }
 
 
     }
@@ -482,11 +478,19 @@ export const StateManager = () => {
     function log(message: string) {
         const logMessage = `${message}`;
         if (realtimestore.client) {
-            const Status = JSON.parse(JSON.stringify(realtimestore.client.sessionConfig));
-            const tasks = JSON.parse(JSON.stringify(basictasks));
-            realtimestore.client.sendNomadEvent({ event: "log.event", data: { status: Status, message: logMessage, basictasks: tasks } });
+            realtimestore.client.sendNomadEvent({ event: "log.event", data: {  message: logMessage } });
         }
         console.log(logMessage);
+    }
+    function notify(message: string) {
+        const notifyMessage = `${message}`;
+        if (realtimestore.client) {
+            const Status = JSON.parse(JSON.stringify(realtimestore.client.sessionConfig));
+            const tasks = JSON.parse(JSON.stringify(basictasks));
+            realtimestore.client.sendNomadEvent({ event: "log.event", data: { status: Status, message: notifyMessage, basictasks: tasks } });
+        }
+
+        console.log(notifyMessage);
     }
 
     return {

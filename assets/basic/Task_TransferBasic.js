@@ -126,7 +126,7 @@ export const Task_TransferBasic = {
                         Data: {
                             event: "client.event",
                             data: {
-                                motion: "Agentout"
+                                message: "Agentout"
                             }
                         }
                     },
@@ -170,7 +170,7 @@ export const Task_TransferBasic = {
                         Data: {
                             event: "client.event",
                             data: {
-                                motion: "Agentin"
+                                message: "Agentin"
                             }
                         }
                     },
@@ -210,7 +210,7 @@ export const Task_TransferBasic = {
                         }
                     },
                     Check: {
-                        Method: "Wait"
+                        Method: "null"
                     },
                     Dependencies: "changeturnendtypeaftertransfer",
                     Status: "Waiting"

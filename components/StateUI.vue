@@ -3,8 +3,8 @@ import { RealtimeStore } from '@/stores/APIClientStore';
 interface ParsedStatus {
   instructions: string;
   voice: string;
-  input_audio_transcription: {model:string} | null;
-  turn_detection: { type: string } | null;  
+  input_audio_transcription: { model: string } | null;
+  turn_detection: { type: string } | null;
   tool_choice: string;
   temperature: number;
   max_response_output_tokens: number;
@@ -16,7 +16,7 @@ const parsedStatus = ref<ParsedStatus>({
   instructions: "awaiting connection...",
   voice: "awaiting connection...",
   input_audio_transcription: null,
-  turn_detection: null, 
+  turn_detection: null,
   tool_choice: "awaiting connection...",
   temperature: 0.0,
   max_response_output_tokens: 0
@@ -46,7 +46,7 @@ const changeVadType = (type: string) => {
   console.log(`changevadtype ${type}`);
   realtimestore.client?.sendNomadEvent({ event: 'control.event', data: { Method: 'ChangeTurnEndType', Data: { value: type } } });
 };
-function reload(){
+function reload() {
   realtimestore.client?.sendNomadEvent({ event: 'control.event', data: { Method: 'ReloadBasicTasks', Data: {} } });
 }
 
@@ -57,29 +57,32 @@ onMounted(() => {
       if (newEvents.length > 0) {
         const latestEvent = newEvents[newEvents.length - 1];
         console.log(latestEvent);
-        if (latestEvent.event.event==='notify.event') {
+        if (latestEvent.event.event === 'notify.event') {
           currentMessage.value = latestEvent.event.data.message;
           showMessageBox.value = true;
         }
-        if(latestEvent.event.event==='log.event'){
-          parsedStatus.value.instructions = latestEvent.event.data.status.instructions;
-          parsedStatus.value.voice = latestEvent.event.data.status.voice;
-          parsedStatus.value.input_audio_transcription = latestEvent.event.data.status.input_audio_transcription;
-          parsedStatus.value.turn_detection = latestEvent.event.data.status.turn_detection;
-          parsedStatus.value.tool_choice = latestEvent.event.data.status.tool_choice;
-          parsedStatus.value.temperature = latestEvent.event.data.status.temperature;
-          parsedStatus.value.max_response_output_tokens = latestEvent.event.data.status.max_response_output_tokens;
-          console.log(parsedStatus.value);
-
-          taskOptions.value = [{ label: 'タスクを選択', value: '', data: {} }];
-          for(const key of Object.keys(latestEvent.event.data.basictasks)){
-            
-            const task = latestEvent.event.data.basictasks[key];
-            if(task.Hidden){}
-            else{taskOptions.value.push({ label: task.Alias, value: task.TaskID, data: {}});}
-            
+        if (latestEvent.event.event === 'log.event') {
+          if (latestEvent.event.data.status) {
+            parsedStatus.value.instructions = latestEvent.event.data.status.instructions;
+            parsedStatus.value.voice = latestEvent.event.data.status.voice;
+            parsedStatus.value.input_audio_transcription = latestEvent.event.data.status.input_audio_transcription;
+            parsedStatus.value.turn_detection = latestEvent.event.data.status.turn_detection;
+            parsedStatus.value.tool_choice = latestEvent.event.data.status.tool_choice;
+            parsedStatus.value.temperature = latestEvent.event.data.status.temperature;
+            parsedStatus.value.max_response_output_tokens = latestEvent.event.data.status.max_response_output_tokens;
+            console.log(parsedStatus.value);
           }
-            
+          if (latestEvent.event.data.basictasks) {
+            taskOptions.value = [{ label: 'タスクを選択', value: '', data: {} }];
+            for (const key of Object.keys(latestEvent.event.data.basictasks)) {
+
+              const task = latestEvent.event.data.basictasks[key];
+              if (task.Hidden) { }
+              else { taskOptions.value.push({ label: task.Alias, value: task.TaskID, data: {} }); }
+
+            }
+          }
+
 
 
         }
@@ -98,27 +101,32 @@ onMounted(() => {
     </div>
   </div>
   <!-- タスクキュー -->
-   <div class= "status-display">
-  <div class="task-queue-inline">
-    <select v-model="selectedTask">
-      <option v-for="(task, index) in taskOptions" :key="index" :value="task.value" :data="task.data">
-        {{ task.label }}
-      </option>
-    </select>
-    <button @click="confirmTask" :disabled="!selectedTask">送信</button>
-    <button @click="reload"><Icon name="reset" /></button>
-  </div>
+  <div class="status-display">
+    <div class="task-queue-inline">
+      <select v-model="selectedTask">
+        <option v-for="(task, index) in taskOptions" :key="index" :value="task.value" :data="task.data">
+          {{ task.label }}
+        </option>
+      </select>
+      <button @click="confirmTask" :disabled="!selectedTask">送信</button>
+      <button @click="reload">
+        <Icon name="reset" />
+      </button>
+    </div>
   </div>
   <!-- ステータス表示 -->
   <div class="status-display">
     <div v-if="parsedStatus">
       <div class="swipe-selector">
-        <div :class="['swipe-option', { active: parsedStatus.turn_detection === null }]" @click="changeVadType('none')">MANUAL MODE</div>
-        <div :class="['swipe-option', { active: parsedStatus.turn_detection !==null && parsedStatus.turn_detection.type === 'server_vad' }]" @click="changeVadType('server_vad')">SERVER VAD MODE</div>
+        <div :class="['swipe-option', { active: parsedStatus.turn_detection === null }]" @click="changeVadType('none')">
+          MANUAL MODE</div>
+        <div
+          :class="['swipe-option', { active: parsedStatus.turn_detection !== null && parsedStatus.turn_detection.type === 'server_vad' }]"
+          @click="changeVadType('server_vad')">SERVER VAD MODE</div>
       </div>
       <h3>Instructions</h3>
       <p>{{ parsedStatus.instructions }}</p>
-      
+
       <div class="status-table">
         <div class="status-row">
           <span class="status-label">Voice:</span>
@@ -154,6 +162,7 @@ onMounted(() => {
   margin-top: 20px;
   color: black;
 }
+
 .message-box {
   position: fixed;
   top: 0;
@@ -266,7 +275,8 @@ button:active:not(:disabled) {
   display: table-row;
 }
 
-.status-label, .status-value {
+.status-label,
+.status-value {
   display: table-cell;
   padding: 10px;
   border: 1px solid #ddd;
@@ -281,9 +291,13 @@ button:active:not(:disabled) {
 }
 
 select {
-  width: 200px; /* 固定の幅を設定 */
-  overflow: hidden; /* 内容が溢れた場合に隠す */
-  text-overflow: ellipsis; /* 溢れた内容を省略記号で表示 */
-  white-space: nowrap; /* 内容を一行にする */
+  width: 200px;
+  /* 固定の幅を設定 */
+  overflow: hidden;
+  /* 内容が溢れた場合に隠す */
+  text-overflow: ellipsis;
+  /* 溢れた内容を省略記号で表示 */
+  white-space: nowrap;
+  /* 内容を一行にする */
 }
 </style>

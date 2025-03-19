@@ -27,10 +27,10 @@ function testtransfer(id:string) {
     client.sendNomadEvent({ event: 'transfer.event',data:{newClient:id} });
   }
 }
-function transfer(id:string) {
+function transfer(name:string,id:string) {
   const client = realtimestore.client;
   if(client){
-    client.sendNomadEvent({ event: 'TransferBasic',data:{newClient:id} });
+    client.sendNomadEvent({ event: 'Task_TransferBasic',data:{newDeviceName:name,newClientID:id} });
   }
 }
 </script>
@@ -55,7 +55,7 @@ function transfer(id:string) {
                 {{ realtimestore.RelayStatus.UserPeers[key] }} 
                 <span v-if="key === realtimestore.RelayStatus.CurrentClient">(Current Client)</span>
                 <span v-if="key === realtimestore.RelayStatus.CurrentClient" class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-2 7a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm7.5 1.5h-11a5 5 0 0011 0zm-4-1.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm-6.5 5a4.5 4.5 0 109 0h-9z"/></svg></span>
-                <span v-else><button @click="testtransfer(key)"class="custom-button">TransferTEST</button></span>
+                <span v-else><button @click="testtransfer(key)"class="custom-button">Transfer</button><button @click="transfer(realtimestore.RelayStatus.UserPeers[key],key)"class="custom-button">Transfer Basic</button></span>
               </li>
             </ul>
           </div>
