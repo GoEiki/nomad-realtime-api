@@ -108,9 +108,6 @@ function stopresponse(){
             {{ option }}
         </button>
     </div>
-    <button @click="stopresponse" class="custom-button">
-        Cancel Response
-    </button>
 </template>
 
 <style scoped>
