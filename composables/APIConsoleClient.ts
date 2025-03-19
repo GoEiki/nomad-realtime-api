@@ -84,24 +84,20 @@ export const ConnectConsole = () => {
             }
             if (realtimeEvent.event.type === 'nomad.event') {
                 realtimestore.addNomadEvent(realtimeEvent);
+                if (realtimeEvent.event.event === 'relay.event') {
+                    realtimestore.RelayStatus.APIconnection = realtimeEvent.event.data.APIconnection;
+                    realtimestore.RelayStatus.UserPeers = realtimeEvent.event.data.userpeers;
+                    realtimestore.RelayStatus.ConsolePeers = realtimeEvent.event.data.consolepeers;
+                    realtimestore.RelayStatus.CurrentClient = realtimeEvent.event.data.CurrentClient;
+                }
+
             }
         });
 
         client.on('error', (event: any) => console.error(event));
     };
     function NomadEventsHandler() {
-        watch(realtimestore.NomadEvents, () => {
-            const NomadEvents = realtimestore.NomadEvents;
-            if (NomadEvents.length > 0) {
-                const latestEvent = NomadEvents[NomadEvents.length - 1];
-                console.log(latestEvent);
-                if (latestEvent.event.event === 'relay.event') {
-                    realtimestore.RelayStatus.UserPeers = latestEvent.event.data.userpeers;
-                    realtimestore.RelayStatus.ConsolePeers = latestEvent.event.data.consolepeers;
-                    realtimestore.RelayStatus.CurrentClient = latestEvent.event.data.CurrentClient;
-                }
-            }
-        });
+
     }
 
 

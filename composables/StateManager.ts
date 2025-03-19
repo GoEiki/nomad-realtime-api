@@ -380,6 +380,7 @@ export const StateManager = () => {
             if (realtimestore.NomadEvents.length > 0) {
                 const latestEvent = realtimestore.NomadEvents[realtimestore.NomadEvents.length - 1];
                 if (latestEvent.event.event === 'relay.event') {
+                    realtimestore.RelayStatus.APIconnection = latestEvent.event.data.APIconnection;
                     realtimestore.RelayStatus.UserPeers = latestEvent.event.data.userpeers;
                     realtimestore.RelayStatus.ConsolePeers = latestEvent.event.data.consolepeers;
                     realtimestore.RelayStatus.CurrentClient = latestEvent.event.data.CurrentClient;

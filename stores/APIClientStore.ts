@@ -10,6 +10,7 @@ export interface RealtimeEvent {
   event: { [key: string]: any };
 }
 export interface ServerStatus{
+  APIconnection: boolean;
   UserPeers: {[id: string]: string };
   ConsolePeers: {[id: string]: string };
   CurrentClient: string|null;
@@ -27,7 +28,7 @@ export const RealtimeStore = defineStore('messages', {
     items: [] as ItemType[], // 対話イベントアイテム
     NomadEvents:[] as RealtimeEvent[],// Nomadのイベント
     FunctionEvents:[] as RealtimeEvent[],// FunctionCall用イベント
-    RelayStatus: {UserPeers:{},ConsolePeers:{},CurrentClient:null} as ServerStatus,
+    RelayStatus: {APIconnection:false,UserPeers:{},ConsolePeers:{},CurrentClient:null} as ServerStatus,
   }),
   actions: {
     toggleMute(){
@@ -37,7 +38,8 @@ export const RealtimeStore = defineStore('messages', {
       this.realtimeEvents = [];
       this.NomadEvents = [];
       this.items = [];
-      this.RelayStatus = {UserPeers:{},ConsolePeers:{},CurrentClient:null};
+      //this.RelayStatus = {APIconnection:false,UserPeers:{},ConsolePeers:{},CurrentClient:null};
+      this.client?.sendNomadEvent({ event: 'request.status' });
     },
     addItem(item:ItemType) {
       this.items.push(item);

@@ -1,30 +1,100 @@
 import { WebSocket } from 'ws';
+const APIURL='wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview';
+const HEADERS={
+  headers: {
+    'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY,
+    'OpenAI-Beta': 'realtime=v1',
+  },
+};
+class WebSocketRelayer {
+  private APIconnection: WebSocket | null;
+  private connectionPromise: Promise<void> ;
+  private connectionResolve: ((value?: void | PromiseLike<void>) => void) | null = null;
+  readyState: typeof WebSocket.CLOSED | typeof WebSocket.OPEN;
+  constructor() {
+    this.APIconnection = null;
+    this.connectionPromise = new Promise<void>(((resolve) => {
+      this.connectionResolve = resolve;
+    }));
+    this.readyState = WebSocket.CLOSED;
+  }
 
+  open(connection: WebSocket) {
+    if (this.APIconnection) {
+      console.error('API connection is already established');
+      return;
+    }
+    this.APIconnection = connection;
+    this.APIconnection!.on('open', () => {
+      console.log('API connection established');
+      if (this.connectionResolve) {
+        this.connectionResolve();
+      }
+      this.readyState = WebSocket.OPEN;
+    });
+
+  }
+
+  async on(event: string, callback: (data: any) => void) {
+    if (this.APIconnection) {
+      this.APIconnection.on(event, callback);
+    } else {
+      try {
+        await this.connectionPromise;
+        this.APIconnection!.on(event, callback);
+      }
+      catch {
+        console.error('onMessage failed. API connection is not established');
+      }
+    }
+  }
+  send(message: string) {
+    if (this.APIconnection) {
+      this.APIconnection.send(message);
+    }
+    else {
+      console.error('Send failed. API connection is not established');
+    }
+  }
+  close() {
+    if (this.APIconnection) {
+      this.APIconnection?.close();
+      this.APIconnection = null;
+      this.readyState = WebSocket.CLOSED;
+      console.log('API connection closed');
+    }
+    else {
+      console.log('API connection is not established');
+    }
+
+  }
+
+}
 class User {
-  readonly connection: WebSocket;
-  userpeers: { [id: string]: {peer:any,name:string} };
-  consolepeers: { [id: string]:  {peer:any,name:string} };
+  readonly connection: WebSocketRelayer | WebSocket;
+  userpeers: { [id: string]: { peer: any, name: string } };
+  consolepeers: { [id: string]: { peer: any, name: string } };
   CurrentClient: any;
   [key: string]: any;
 
-  constructor(connection: WebSocket) {
+  constructor(connection: WebSocketRelayer | WebSocket) {
     this.connection = connection;
-    this.userpeers = this.createPeerProxy({},'UserPeer');  // userpeersにProxyを適用
-    this.consolepeers = this.createPeerProxy({},'ConsolePeer');  // consolepeersにProxyを適用
+    this.userpeers = this.createPeerProxy({}, 'UserPeer');  // userpeersにProxyを適用
+    this.consolepeers = this.createPeerProxy({}, 'ConsolePeer');  // consolepeersにProxyを適用
     this.CurrentClient = null;
 
     // プロパティ変更時の通知をセット
     return new Proxy(this, {
-      set: (target, property:string, value:any) => {
-          target[property] = value;
-          this.SendToConsolePeers(this.StringfyStatus());
-          console.log(`${property} changed to ${value}`);
+      set: (target, property: string, value: any) => {
+        target[property] = value;
+        this.SendToConsolePeers(this.StringfyStatus());
+        console.log(`${property} changed to ${value}`);
         return true;
       }
     });
   }
   //プロキシのセット
-  createPeerProxy(peers: { [id: string]: any },Proxyname:string = '') {
+  createPeerProxy(peers: { [id: string]: any }, Proxyname: string = '') {
     return new Proxy(peers, {
       set: (target, property: string, value: any) => {
         target[property] = value;
@@ -41,8 +111,8 @@ class User {
     });
   }
   //Userメンバーをメッセージ化
-  private StringfyStatus(){
-    const UserPeer  = Object.entries(this.userpeers as { [key: string]: { peer: any, name: string } }).reduce((acc: { [key: string]: string }, [id, value]: [string, { peer: any, name: string }]) => {
+  StringfyStatus() {
+    const UserPeer = Object.entries(this.userpeers as { [key: string]: { peer: any, name: string } }).reduce((acc: { [key: string]: string }, [id, value]: [string, { peer: any, name: string }]) => {
       acc[id] = value.name as string;
       return acc;
     }, {});
@@ -50,10 +120,13 @@ class User {
       acc[id] = value.name as string;
       return acc;
     }, {});
+    let State = false;
+    if(this.connection.readyState===WebSocket.OPEN){State =true}
     const message = JSON.stringify({
       type: 'nomad.event',
       event: 'relay.event',
-      data:{
+      data: {
+        APIconnection: State,
         userpeers: UserPeer,
         consolepeers: ConsolePeer,
         CurrentClient: this.CurrentClient,
@@ -65,19 +138,19 @@ class User {
   SendToConsolePeers(message: string, forgetID?: string) {
     // consolepeers にメッセージを送信
     Object.keys(this.consolepeers).forEach(id => {
-      if(id !== forgetID) {
+      if (id !== forgetID) {
         const peer = this.consolepeers[id].peer;
         try {
           peer.send(message);
         } catch (error) {
           console.error("Error sending message:", error);
         }
-    }
+      }
     });
   }
   SendToCurentClient(message: string) {
-    if(this.CurrentClient === null){return;}
-    const peer= this.userpeers[this.CurrentClient].peer;
+    if (this.CurrentClient === null) { return; }
+    const peer = this.userpeers[this.CurrentClient].peer;
     try {
       console.log('sending message to CurrentClient');
       peer.send(message);
@@ -90,11 +163,11 @@ class User {
   private hasUserPeer(id: string): boolean {
     return this.userpeers.hasOwnProperty(id);
   }
-  TransferClient(newID: string){
-    if(this.hasUserPeer(newID)){
+  TransferClient(newID: string) {
+    if (this.hasUserPeer(newID)) {
       this.CurrentClient = newID;
     }
-    else{
+    else {
       console.error('Transfer failed. Client ID is not found');
     }
   }
@@ -104,21 +177,21 @@ class User {
 function generateRandomName(): string {
   // よくある人名のリスト (30個)
   const names = [
-    'Alice', 'Bob', 'Charlie', 'David', 'Eve', 
-    'Fiona', 'George', 'Hannah', 'Ian', 'Jack', 
-    'Karen', 'Liam', 'Mia', 'Noah', 'Olivia', 
-    'Paul', 'Quinn', 'Rachel', 'Sam', 'Tina', 
-    'Uma', 'Victor', 'Wendy', 'Xavier', 'Yara', 
+    'Alice', 'Bob', 'Charlie', 'David', 'Eve',
+    'Fiona', 'George', 'Hannah', 'Ian', 'Jack',
+    'Karen', 'Liam', 'Mia', 'Noah', 'Olivia',
+    'Paul', 'Quinn', 'Rachel', 'Sam', 'Tina',
+    'Uma', 'Victor', 'Wendy', 'Xavier', 'Yara',
     'Zane', 'Sophia', 'Emma', 'Lucas', 'Daniel'
   ];
 
   // 絵文字のリスト (30個)
   const emojis = [
-    '😀', '🐱', '🐶', '🦊', '🐻', 
-    '🐼', '🦁', '🐯', '🐰', '🐵', 
-    '🐸', '🐥', '🐟', '🐘', '🐍', 
-    '🦉', '🐴', '🐧', '🐨', '🦒', 
-    '🐓', '🐳', '🐬', '🐢', '🐞', 
+    '😀', '🐱', '🐶', '🦊', '🐻',
+    '🐼', '🦁', '🐯', '🐰', '🐵',
+    '🐸', '🐥', '🐟', '🐘', '🐍',
+    '🦉', '🐴', '🐧', '🐨', '🦒',
+    '🐓', '🐳', '🐬', '🐢', '🐞',
     '🌸', '🌻', '🌟', '🔥', '🍎'
   ];
 
@@ -154,39 +227,16 @@ export default defineWebSocketHandler({
     }
     if (!name) {
       console.log('Name is not defined');
-      if(role==='user'){name='USER-'+generateRandomName();}
-      else if(role==='console'){name='CONSOLE-'+generateRandomName();}
+      if (role === 'user') { name = 'USER-' + generateRandomName(); }
+      else if (role === 'console') { name = 'CONSOLE-' + generateRandomName(); }
     }
     console.log(`new connection ( User ID:${userId} Name: ${name} Role: ${role} Peer ID: ${peer.id})`);
-
-    //ユーザーIDが存在しなければ新しい接続を作成
     if (!users[userId]) {
-      // OpenAIのRealtime APIとの接続
-      const APIurl = 'wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview';
-      users[userId] = new User (
-        new WebSocket(APIurl, {
-          headers: {
-            'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY,
-            'OpenAI-Beta': 'realtime=v1',
-          },
-        }),
-      );
-      const instructions = 'ユーザーをサポートしてください。';
-      users[userId].connection.on('open', () => {
-        // Realtime APIのセッション設定
-        users[userId].connection.send(JSON.stringify({
-          type: 'session.update',
-          session: {
-            voice: 'shimmer',
-            instructions: instructions,
-            input_audio_transcription: { model: 'whisper-1' },
-            turn_detection: { type: 'server_vad' },
-          },
-        }));
-      });
-      console.log('opened API connection');
+      // WebSokcetRelayerとの接続
+      users[userId] = new User(new WebSocketRelayer());
+      console.log('opened Relayer connection');
     }
-    if(role === 'console'){
+    if (role === 'console') {
       if (name) {
         users[userId].consolepeers[peer.id] = { peer, name };
       } else {
@@ -194,7 +244,7 @@ export default defineWebSocketHandler({
         peer.close();
       }
     }
-    else if(role === 'user'){
+    else if (role === 'user') {
       if (name) {
         users[userId].userpeers[peer.id] = { peer, name };
       } else {
@@ -205,18 +255,18 @@ export default defineWebSocketHandler({
     }
     users[userId].connection.on('message', (message) => {
       // Realtime APIのサーバーイベントはそのままクライアントに返す
-      if(role === 'console'){
+      if (role === 'console') {
         peer.send(message.toString());
 
       }
-      else if(role === 'user' && users[userId].CurrentClient === peer.id){
+      else if (role === 'user' && users[userId].CurrentClient === peer.id) {
         peer.send(message.toString());
-        
+
       }
     });
-    
+
   },
-  message(peer, message) {
+  async message(peer, message) {
     if (!peer.websocket.url) {
       console.error('WebSocket URL is undefined');
       peer.close();
@@ -230,28 +280,41 @@ export default defineWebSocketHandler({
       return;
     }
     const parsedMessage = JSON.parse(message.text());
-    if(parsedMessage['type'] === 'nomad.event'){
-      if(parsedMessage['event']==='transfer.event'){
+    if (parsedMessage['type'] === 'nomad.event') {
+      if (parsedMessage['event'] === 'transfer.event') {
         users[userId].TransferClient(parsedMessage['data']['newClient']);
       }
-      if(parsedMessage['event']==='open.event'){
-
+      if (parsedMessage['event'] === 'open.event') {
+        if (users[userId].connection instanceof WebSocketRelayer) {
+          users[userId].connection.open(new WebSocket(APIURL, HEADERS));
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          users[userId].SendToConsolePeers(users[userId].StringfyStatus());
+        }
       }
-      if(parsedMessage['event']==='client.event'){
+      if (parsedMessage['event'] === 'close.event') {
+        if (users[userId].connection instanceof WebSocketRelayer) {
+          users[userId].connection.close();
+          users[userId].SendToConsolePeers(users[userId].StringfyStatus());
+        }
+      }
+      if (parsedMessage['event'] === 'request.status') {
+        users[userId].SendToConsolePeers(users[userId].StringfyStatus());
+      }
+      if (parsedMessage['event'] === 'client.event') {
         users[userId].SendToCurentClient(message.text());
       }
       users[userId].SendToConsolePeers(message.text(), peer.id);
     }
-    else{
+    else {
       // CurrentClientのイベントはそのままRealtime APIに中継する
-      if(users[userId].CurrentClient === peer.id){
+      if (users[userId].CurrentClient === peer.id) {
         if (users[userId].connection.readyState === WebSocket.OPEN) {
           users[userId].connection.send(message.text());
         }
         //users[userId].SendToConsolePeers(message.text(), peer.id);
       }
       //コンソールからのイベントは全てRealtime APIに中継する
-      else if(users[userId].consolepeers[peer.id]){
+      else if (users[userId].consolepeers[peer.id]) {
         if (users[userId].connection.readyState === WebSocket.OPEN) {
           users[userId].connection.send(message.text());
         }
@@ -260,7 +323,7 @@ export default defineWebSocketHandler({
     }
     // コンソールクライアントにメッセージを送信
     //users[userId].SendToConsolePeers(message.text(), peer.id);
-    
+
   },
   close(peer) {
     if (!peer.websocket.url) {
@@ -275,18 +338,18 @@ export default defineWebSocketHandler({
       peer.close();
       return;
     }
-    if(users[userId].userpeers[peer.id]){
+    if (users[userId].userpeers[peer.id]) {
       delete users[userId].userpeers[peer.id];
     }
-    else if(users[userId].consolepeers[peer.id]){
+    else if (users[userId].consolepeers[peer.id]) {
       delete users[userId].consolepeers[peer.id];
     }
     console.log((`Peer ${peer.id} disconnected`));
-    if(Object.keys(users[userId].userpeers).length === 0&&Object.keys(users[userId].consolepeers).length === 0){
+    if (Object.keys(users[userId].userpeers).length === 0 && Object.keys(users[userId].consolepeers).length === 0) {
       users[userId].connection.close();
       delete users[userId];
       console.log('Final peer disconnected');
-      console.log('closed API connection');
+      console.log('closed Relayer connection');
     }
   },
   error(peer, error) {
