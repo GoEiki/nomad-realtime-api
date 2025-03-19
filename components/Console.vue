@@ -42,6 +42,9 @@ function toggleAPIconnection() {
 }
 </script>
 <template>
+  <div>
+    <h3 style="color: black;">APIと再接続するときは毎回リレーサーバーとの再接続が必要です。</h3>
+  </div>
       <button @click="toggleConnection":style="{backgroundColor: !realtimestore.isConnected ? '#4CAF50' : '#cc4d4d', color: '#fff'}">
         {{ realtimestore.isConnected ? '切断' : '接続' }}
       </button>
