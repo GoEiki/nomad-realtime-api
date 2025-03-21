@@ -69,7 +69,7 @@ export const Task_EspressoDemo = {
             ToDo: {
                 Method: "SetTaskHandler",
                 Data: {
-                    Target: ["Task1", "Task2", "Task3",]
+                    Target: ["Task0", "Task1", "Task2","Task3", "Task4", "Task5","Task6", "Task7", "Task8","Task9"]
                 }
             },
             Check: {
@@ -87,13 +87,13 @@ export const Task_EspressoDemo = {
             Flow: [
                 {
                     Type: "SubTask",
-                    Alias: "ステップ１：丸を描く",
-                    TaskID: "Task1",
+                    Alias: "ステップ１：ユーザーの確認",
+                    TaskID: "Task0",
                     ToDo: {
                         Method: "CreateResponse",
                         Data: {
                             response: {
-                                instructions: "ステップ「0:ユーザーに丸を描かせてください。」を実行してください。"
+                                instructions: "* 0:ユーザーにタスクを開始する準備ができたかどうかの確認をとる。確認が取れたら次に進む。"
                             }
                         }
                     },
@@ -105,13 +105,121 @@ export const Task_EspressoDemo = {
                 },
                 {
                     Type: "SubTask",
-                    Alias: "ステップ２：丸の中に丸を描く",
+                    Alias: "ステップ２：水を入れる",
+                    TaskID: "Task1",
+                    ToDo: {
+                        Method: "CreateResponse",
+                        Data: {
+                            response: {
+                                instructions: "* 1:給水タンクに水が満水になっているか確認する。"
+                            }
+                        }
+                    },
+                    Check: {
+                        Method: "Wait"
+                    },
+                    Dependencies: "Task0",
+                    Status: "Waiting"
+                },
+                {
+                    Type: "SubTask",
+                    Alias: "ステップ３：シングルスパウトを取り付ける",
                     TaskID: "Task2",
                     ToDo: {
                         Method: "CreateResponse",
                         Data: {
                             response: {
-                                instructions: "ステップ「1:丸の中にさらに丸を描かせてください。」を実行してください。"
+                                instructions: "* 2:フィルターホルダーにシングルスパウトを取り付ける。"
+                            }
+                        }
+                    },
+                    Check: {
+                        Method: "Wait"
+                    },
+                    Dependencies: "Task0",
+                    Status: "Waiting"
+                },
+                {
+                    Type: "SubTask",
+                    Alias: "ステップ４：シングルフィルターを取り付ける",
+                    TaskID: "Task3",
+                    ToDo: {
+                        Method: "CreateResponse",
+                        Data: {
+                            response: {
+                                instructions: "* 3:フィルターホルダーにシングルフィルターを取り付ける。"
+                            }
+                        }
+                    },
+                    Check: {
+                        Method: "Wait"
+                    },
+                    Dependencies: "Task0",
+                    Status: "Waiting"
+                },
+                {
+                    Type: "SubTask",
+                    Alias: "ステップ５：コーヒー粉を詰める",
+                    TaskID: "Task4",
+                    ToDo: {
+                        Method: "CreateResponse",
+                        Data: {
+                            response: {
+                                instructions: "* 4:フィルターホルダーにコーヒー粉を詰める。"
+                            }
+                        }
+                    },
+                    Check: {
+                        Method: "Wait"
+                    },
+                    Dependencies: "Task3",
+                    Status: "Waiting"
+                },
+                {
+                    Type: "SubTask",
+                    Alias: "ステップ６：本体に取り付ける",
+                    TaskID: "Task5",
+                    ToDo: {
+                        Method: "CreateResponse",
+                        Data: {
+                            response: {
+                                instructions: "* 5:フィルターホルダーをエスプレッソマシン本体に取り付ける。"
+                            }
+                        }
+                    },
+                    Check: {
+                        Method: "Wait"
+                    },
+                    Dependencies: "Task4",
+                    Status: "Waiting"
+                },
+                {
+                    Type: "SubTask",
+                    Alias: "ステップ７：カップをセットする",
+                    TaskID: "Task6",
+                    ToDo: {
+                        Method: "CreateResponse",
+                        Data: {
+                            response: {
+                                instructions: "* 6:カップをセットする。"
+                            }
+                        }
+                    },
+                    Check: {
+                        Method: "Wait"
+                    },
+                    Dependencies: "Task5",
+                    Status: "Waiting"
+                },
+                {
+                    Type: "SubTask",
+                    Alias: "ステップ８：電源を入れる",
+                    TaskID: "Task7",
+                    ToDo: {
+                        Method: "CreateResponse",
+                        Data: {
+                            response: {
+                                instructions: "* 7:電源を入れる。"
                             }
                         }
                     },
@@ -123,20 +231,38 @@ export const Task_EspressoDemo = {
                 },
                 {
                     Type: "SubTask",
-                    Alias: "ステップ３：丸と丸のの間に四角を描く",
-                    TaskID: "Task3",
+                    Alias: "ステップ９：自動コーヒーボタンを押す",
+                    TaskID: "Task8",
                     ToDo: {
                         Method: "CreateResponse",
                         Data: {
                             response: {
-                                instructions: "ステップ「2:大きな丸の内側、小さな丸の外側になるように四角を描かせてください。」を実行してください。"
+                                instructions: "* 8:自動コーヒーボタンを押す。"
                             }
                         }
                     },
                     Check: {
                         Method: "Wait"
                     },
-                    Dependencies: "Task2",
+                    Dependencies: "Task7",
+                    Status: "Waiting"
+                },
+                {
+                    Type: "SubTask",
+                    Alias: "ステップ１０：抽出を確認する",
+                    TaskID: "Task9",
+                    ToDo: {
+                        Method: "CreateResponse",
+                        Data: {
+                            response: {
+                                instructions: "* 9:エスプレッソが適切に抽出されているかどうか確認し、問題がなければタスクを完了する。"
+                            }
+                        }
+                    },
+                    Check: {
+                        Method: "Wait"
+                    },
+                    Dependencies: "Task8",
                     Status: "Waiting"
                 }
             ]
