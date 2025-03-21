@@ -157,18 +157,6 @@ export const BaseMigration = {
             Dependencies: "changeturnendtypeaftertransfer",
             Status: "Waiting"
         },
-        {
-            Type: "SubTask",
-            Alias: "TransferBasic_ResetTaskHandler",
-            TaskID: "transferbasic_resettaskhandler",
-            ToDo: {
-                Method: "ResetTaskHandler"
-            },
-            Check: {
-                Method: "null"
-            },
-            Dependencies: "resetinstruction",
-            Status: "Waiting"
-        }
+
     ]
 };
