@@ -250,7 +250,7 @@ export const StateManager = () => {
                 });
 
             }
-
+            notify('ChangeTurnEndType called');
             return true;
         },
         'ReloadBasicTasks': async (event: ToDo) => {
