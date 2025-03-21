@@ -92,7 +92,7 @@ export const NomadTasks = {
             Alias: "TransfertoCommu",
             TaskID: "Transfertocommu",
             ToDo: {
-                Method: "TaskQueue",
+                Method: "Replace",
                 Data: {
                     Target:"TransfertoCommu",
                     Task:"Task_TransferBasic",
