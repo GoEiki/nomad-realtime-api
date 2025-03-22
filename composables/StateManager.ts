@@ -83,9 +83,9 @@ export const StateManager = () => {
                 notify('UpdateInstruction called');
                 return true;
             }
-            
+
             return false;
-            
+
         },
         'CreateResponse': (event: ToDo) => {
             if (event.Data) {
@@ -229,9 +229,9 @@ export const StateManager = () => {
                 notify('UpdateSession called');
                 return true;
             }
-            
+
             return false;
-            
+
         },
         'ChangeTurnEndType': (event: ToDo) => {
             console.log('ChangeTurnEndType called');
@@ -412,12 +412,18 @@ export const StateManager = () => {
             realtimestore.client?.sendNomadEvent({ event: "state.event", data: TaskQueue.value });
             const SubTask = TaskScheduler(TaskQueue.value);
             if (SubTask) {
-                if (TaskExecutor(SubTask)) {
-                    TaskChecker(SubTask);
-                    realtimestore.client?.sendNomadEvent({ event: "state.event", data: TaskQueue.value });
+                if (SubTask.ToDo?.Method === 'TaskQueue') {
+                    SubTask.Status = 'Completed';
+                    Eventprocessor['TaskQueue']({ Method: 'TaskQueue', Data: { Task: SubTask.ToDo.Data.Task, ReplaceData: SubTask.ToDo.Data.ReplaceData } });
                 }
                 else {
-                    log(`Task ${SubTask.TaskID} failed to execute`);
+                    if (TaskExecutor(SubTask)) {
+                        TaskChecker(SubTask);
+                        realtimestore.client?.sendNomadEvent({ event: "state.event", data: TaskQueue.value });
+                    }
+                    else {
+                        log(`Task ${SubTask.TaskID} failed to execute`);
+                    }
                 }
             }
         }, { deep: true });
@@ -479,7 +485,7 @@ export const StateManager = () => {
     function log(message: string) {
         const logMessage = `${message}`;
         if (realtimestore.client) {
-            realtimestore.client.sendNomadEvent({ event: "log.event", data: {  message: logMessage } });
+            realtimestore.client.sendNomadEvent({ event: "log.event", data: { message: logMessage } });
         }
         console.log(logMessage);
     }

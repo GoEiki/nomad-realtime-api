@@ -35,12 +35,11 @@ export const NomadTasks = {
     Flow: [
         {
             Type: "SubTask",
-            Alias: "Introduction",
-            TaskID: "Introduction",
+            Alias: "Add Introduction",
+            TaskID: "TaskQueue1",
             ToDo: {
-                Method: "Replace",
+                Method: "TaskQueue",
                 Data: {
-                    Target:"Introduction",
                     Task:"introduction",
                     ReplaceData: {}
                 }
@@ -53,12 +52,11 @@ export const NomadTasks = {
         },
         {
             Type: "SubTask",
-            Alias: "TransferToEarbuzz",
-            TaskID: "TransferToEarbuzz",
+            Alias: "Add TransferToEarbuzz",
+            TaskID: "TaskQueue2",
             ToDo: {
-                Method: "Replace",
+                Method: "TaskQueue",
                 Data: {
-                    Target:"TransferToEarbuzz",
                     Task:"MigrateBrowserToEarbuzz",
                     ReplaceData: {}
                 }
@@ -71,12 +69,11 @@ export const NomadTasks = {
         },
         {
             Type: "SubTask",
-            Alias: "esspressodemo",
-            TaskID: "espressodemo",
+            Alias: "Add EspressoDemo",
+            TaskID: "TaskQueue3",
             ToDo: {
-                Method: "Replace",
+                Method: "TaskQueue",
                 Data: {
-                    Target:"espressodemo",
                     Task:"EspressoDemo",
                     ReplaceData: {}
                 }
@@ -89,10 +86,10 @@ export const NomadTasks = {
         },
         {
             Type: "SubTask",
-            Alias: "TransfertoCommu",
-            TaskID: "Transfertocommu",
+            Alias: "Add TransfertoCommu",
+            TaskID: "TaskQueue4",
             ToDo: {
-                Method: "Replace",
+                Method: "TaskQueue",
                 Data: {
                     Target:"TransfertoCommu",
                     Task:"Task_TransferBasic",
