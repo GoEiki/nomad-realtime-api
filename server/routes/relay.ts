@@ -8,15 +8,12 @@ const HEADERS={
 };
 class WebSocketRelayer {
   private APIconnection: WebSocket | null;
-  private connectionPromise: Promise<void> ;
-  private connectionResolve: ((value?: void | PromiseLike<void>) => void) | null = null;
   readyState: typeof WebSocket.CLOSED | typeof WebSocket.OPEN;
+  private callbacks: any[];
   constructor() {
     this.APIconnection = null;
-    this.connectionPromise = new Promise<void>(((resolve) => {
-      this.connectionResolve = resolve;
-    }));
     this.readyState = WebSocket.CLOSED;
+    this.callbacks = [];
   }
 
   open(connection: WebSocket) {
@@ -27,25 +24,20 @@ class WebSocketRelayer {
     this.APIconnection = connection;
     this.APIconnection!.on('open', () => {
       console.log('API connection established');
-      if (this.connectionResolve) {
-        this.connectionResolve();
-      }
       this.readyState = WebSocket.OPEN;
     });
-
+    this.APIconnection!.on('message', (message) => {
+      const callbacksToCall = this.callbacks;
+      callbacksToCall.forEach(callback => callback(message));
+    });
   }
 
-  async on(event: string, callback: (data: any) => void) {
-    if (this.APIconnection) {
-      this.APIconnection.on(event, callback);
-    } else {
-      try {
-        await this.connectionPromise;
-        this.APIconnection!.on(event, callback);
-      }
-      catch {
-        console.error('onMessage failed. API connection is not established');
-      }
+  on(event: string, callback: (data: any) => void) {
+    if (event === 'message') {
+      this.callbacks.push(callback);
+    }
+    else {
+      console.error('Unsupported event type');
     }
   }
   send(message: string) {
