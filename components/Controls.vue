@@ -91,7 +91,7 @@ function CreateResponse() {
 
 }
 function stopresponse(){
-    realtimestore.client?.sendNomadEvent({event: 'client.event', data: {function: 'cancelresponse'}});
+    realtimestore.client?.sendNomadEvent({event: 'client.event',data:{message:'cancel'}});
 }
 </script>
 
@@ -108,6 +108,8 @@ function stopresponse(){
             {{ option }}
         </button>
     </div>
+    <button @click="stopresponse" >Cancel Response</button>
+
 </template>
 
 <style scoped>

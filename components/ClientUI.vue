@@ -4,7 +4,7 @@ import { ConnectUser } from '@/composables/APIClient';
 const clientCanvasRef = ref<HTMLCanvasElement | undefined>(undefined);
 const serverCanvasRef = ref<HTMLCanvasElement | undefined>(undefined);
 const realtimestore = RealtimeStore(); // Pinia ストアを取得
-const { connectConversation, disconnectConversation, setClient, ConversationHandler, setCanvas } = ConnectUser();
+const { connectConversation, disconnectConversation, CancelResponse,setClient, ConversationHandler, setCanvas } = ConnectUser();
 const { connect, disconnect, sendMessage, isConnected } = useWebSocket();
 const usernameInput = ref('');
 const username = ref<string | null>(null);
@@ -28,7 +28,14 @@ onMounted(() => {
             const latestEvent = realtimestore.NomadEvents[realtimestore.NomadEvents.length - 1];
             if (latestEvent.event.event === 'client.event') {
                 console.log('client event:', latestEvent.event);
-                sendMessage(JSON.stringify(latestEvent.event));
+                if(latestEvent.event.data.message === 'cancel'){
+                    CancelResponse();
+                    
+                }
+                else{
+                    sendMessage(JSON.stringify(latestEvent.event));
+                }
+                
             }
         }
     });

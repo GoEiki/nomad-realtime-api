@@ -112,6 +112,17 @@ export const ConnectUser = () => {
 
         client.on('error', (event: any) => console.error(event));
     };
+    async function CancelResponse(){
+        console.log('cancel');
+        const client = realtimestore.client;
+        const wavStreamPlayer = realtimestore.wavStreamPlayer;
+        if (!client || !wavStreamPlayer) return;
+        const trackSampleOffset = await wavStreamPlayer.interrupt();
+        if (trackSampleOffset?.trackId) {
+            const { trackId, offset } = trackSampleOffset;
+            await client.cancelResponse(trackId, offset);
+        }
+    }
     // キャンバス描画
     function setCanvas(ClientCanvas: HTMLCanvasElement, ServerCanvas: HTMLCanvasElement) {
         realtimestore.clientCanvas = ClientCanvas;
@@ -178,6 +189,7 @@ export const ConnectUser = () => {
     }
     return {
         connectConversation,
+        CancelResponse,
         connectMultiConversation,
         disconnectConversation,
         setClient,
