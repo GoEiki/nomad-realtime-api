@@ -15,22 +15,33 @@ class WebSocketRelayer {
     this.readyState = WebSocket.CLOSED;
     this.callbacks = [];
   }
-
-  open(connection: WebSocket) {
+  open(connection: WebSocket): Promise<void> {
     if (this.APIconnection) {
       console.error('API connection is already established');
-      return;
+      return Promise.reject('API connection is already established');
     }
+
     this.APIconnection = connection;
-    this.APIconnection!.on('open', () => {
-      console.log('API connection established');
-      this.readyState = WebSocket.OPEN;
-    });
-    this.APIconnection!.on('message', (message) => {
-      const callbacksToCall = this.callbacks;
-      callbacksToCall.forEach(callback => callback(message));
+
+    return new Promise((resolve, reject) => {
+      this.APIconnection!.on('open', () => {
+        console.log('API connection established');
+        this.readyState = WebSocket.OPEN;
+        
+        resolve(); // openイベントが発火したらPromiseを解決
+      });
+
+      this.APIconnection!.on('error', (error) => {
+        console.error('Error establishing API connection:', error);
+        reject(error); // エラーが発生したらPromiseを拒否
+      });
+      this.APIconnection!.on('message', (message) => {
+        const callbacksToCall = this.callbacks;
+        callbacksToCall.forEach(callback => callback(message));
+      });
     });
   }
+
 
   on(event: string, callback: (data: any) => void) {
     if (event === 'message') {
@@ -278,8 +289,8 @@ export default defineWebSocketHandler({
       }
       if (parsedMessage['event'] === 'open.event') {
         if (users[userId].connection instanceof WebSocketRelayer) {
-          users[userId].connection.open(new WebSocket(APIURL, HEADERS));
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await users[userId].connection.open(new WebSocket(APIURL, HEADERS));
+          //await new Promise(resolve => setTimeout(resolve, 1000));
           users[userId].SendToConsolePeers(users[userId].StringfyStatus());
         }
       }
