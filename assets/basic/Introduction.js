@@ -75,6 +75,63 @@ export const Intorduction = {
         },
         {
             Type: "SubTask",
+            Alias: "ChangeTurnEndTypeBeforeNomadTasks",
+            TaskID: "changeturnendtypebeforenomadtasks",
+            ToDo: {
+                Method: "ChangeTurnEndType",
+                Data: {
+                    value: "none"
+                }
+            },
+            Check: {
+                Method: "null"
+            },
+            Dependencies: "settaskhandler",
+            Status: "Waiting"
+        },
+        {
+            Type: "SubTask",
+            Alias: "タスク一時停止",
+            TaskID: "PauseTask",
+            ToDo: {
+                Method: "PostNomadEvent",
+                Data: {
+                    event: "notify.event",
+                    data: {
+                        message: "以下のボタンを押すと、デモンストレーションを開始します。"
+                    }
+                }
+            },
+            Check: {
+                Method: "GetNomadEvent",
+                Data: {
+                    event: "message.event",
+                    data: {
+                        message: "confirm"
+                    }
+                }
+            },
+            Dependencies: "changeturnendtypebeforenomadtasks",
+            Status: "Waiting"
+        },
+        {
+            Type: "SubTask",
+            Alias: "StartNomadTasks",
+            TaskID: "startnomadtasks",
+            ToDo: {
+                Method: "ChangeTurnEndType",
+                Data: {
+                    value: "server_vad"
+                }
+            },
+            Check: {
+                Method: "null"
+            },
+            Dependencies: "PauseTask",
+            Status: "Waiting"
+        },
+        {
+            Type: "SubTask",
             Alias: "ブラウザに出現",
             TaskID: "appearbrowser",
             ToDo: {
@@ -92,7 +149,7 @@ export const Intorduction = {
                     time: 2000
                 }
             },
-            Dependencies: "settaskhandler",
+            Dependencies: "startnomadtasks",
             Status: "Waiting"
         },
         {
