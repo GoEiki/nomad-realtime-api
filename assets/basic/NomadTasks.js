@@ -35,6 +35,23 @@ export const NomadTasks = {
     Flow: [
         {
             Type: "SubTask",
+            Alias: "Add Init",
+            TaskID: "TaskQueue0",
+            ToDo: {
+                Method: "TaskQueue",
+                Data: {
+                    Task:"Init",
+                    ReplaceData: {}
+                }
+            },
+            Check: {
+                Method: "null"
+            },
+            Dependencies: "null",
+            Status: "Waiting"
+        },        
+        {
+            Type: "SubTask",
             Alias: "Add Introduction",
             TaskID: "TaskQueue1",
             ToDo: {
@@ -52,12 +69,12 @@ export const NomadTasks = {
         },
         {
             Type: "SubTask",
-            Alias: "Add TransferToEarbuzz",
+            Alias: "Add TransferToEarbuds",
             TaskID: "TaskQueue2",
             ToDo: {
                 Method: "TaskQueue",
                 Data: {
-                    Task:"MigrateBrowserToEarbuzz",
+                    Task:"TransferToEarbuds",
                     ReplaceData: {}
                 }
             },
@@ -69,12 +86,12 @@ export const NomadTasks = {
         },
         {
             Type: "SubTask",
-            Alias: "Add EspressoDemo",
+            Alias: "Add EspressoShort",
             TaskID: "TaskQueue3",
             ToDo: {
                 Method: "TaskQueue",
                 Data: {
-                    Task:"EspressoDemo",
+                    Task:"EspressoShort",
                     ReplaceData: {}
                 }
             },
@@ -86,17 +103,50 @@ export const NomadTasks = {
         },
         {
             Type: "SubTask",
-            Alias: "Add TransfertoCommu",
+            Alias: "Add TransfertoRobot",
             TaskID: "TaskQueue4",
             ToDo: {
                 Method: "TaskQueue",
                 Data: {
-                    Target:"TransfertoCommu",
-                    Task:"Task_TransferBasic",
+                    Task:"TransferToRobot",
                     ReplaceData: {
-                        newDeviceName: "コミュ",
-                        newClientID: "{{コミュ_ID}}"
+                        newDeviceName: "ロボット",
+                        newClientID: "{{ロボット_ID}}"
                     }
+                }
+            },
+            Check: {
+                Method: "null"
+            },
+            Dependencies: "null",
+            Status: "Waiting"
+        },
+        {
+            Type: "SubTask",
+            Alias: "Add RobotDemo",
+            TaskID: "TaskQueue5",
+            ToDo: {
+                Method: "TaskQueue",
+                Data: {
+                    Task:"RobotDemo",
+                    ReplaceData: {}
+                }
+            },
+            Check: {
+                Method: "null"
+            },
+            Dependencies: "null",
+            Status: "Waiting"
+        },
+        {
+            Type: "SubTask",
+            Alias: "Add Ending",
+            TaskID: "TaskQueue6",
+            ToDo: {
+                Method: "TaskQueue",
+                Data: {
+                    Task:"Ending",
+                    ReplaceData: {}
                 }
             },
             Check: {

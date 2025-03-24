@@ -26,25 +26,21 @@
  */
 
 /** @type {Task} */
-export const BaseMigration = {
-    Hidden: true,
+export const RobotDemo = {
     Type: "TaskFlow",
-    Alias: "Migrate to {{newDeviceName}}",
-    TaskID: "BaseMigration",
+    Alias: "RobotDemo",
+    TaskID: "RobotDemo",
     Dependencies: "null",
     Status: "Waiting",
-    Requirements: [
-        "newDeviceName","newClientID"
-    ],
     Flow: [
         {
             Type: "SubTask",
-            Alias: "ChangeTurnEndTypeBeforeTransfer",
-            TaskID: "changeturnendtypebeforetransfer",
-            ToDo: {
-                Method: "ChangeTurnEndType",
-                Data: {
-                    value: "none"
+            Alias: "Instruction更新",
+            TaskID: "updateinstruction",
+            ToDo:{
+                Method: "UpdateInstruction",
+                Data: {//ご駅のインストラクション
+                    instructions: `{{headerinstructions}}`
                 }
             },
             Check: {
@@ -55,14 +51,56 @@ export const BaseMigration = {
         },
         {
             Type: "SubTask",
-            Alias: "DisappearMotion",
-            TaskID: "DisappearMotion",
+            Alias: "ChangeTurnEndTypeBeforeRobotDemo",
+            TaskID: "changeturnendtypebeforeRobotDemo",
+            ToDo: {
+                Method: "ChangeTurnEndType",
+                Data: {
+                    value: "none"
+                }
+            },
+            Check: {
+                Method: "null"
+            },
+            Dependencies: "updateinstruction",
+            Status: "Waiting"
+        },
+        {
+            Type: "SubTask",
+            Alias: "タスク一時停止",
+            TaskID: "PauseTask",
+            ToDo: {
+                Method: "PostNomadEvent",
+                Data: {
+                    event: "notify.event",
+                    data: {
+                        message: "タスクを一時停止します。完了時に以下のボタンを押してください"
+                    }
+                }
+            },
+            Check: {
+                Method: "GetNomadEvent",
+                Data: {
+                    event: "message.event",
+                    data: {
+                        message: "confirm"
+                    }
+                }
+            },
+            Dependencies: "changeturnendtypebeforeRobotDemo",
+            Status: "Waiting"
+        },
+
+        {
+            Type: "SubTask",
+            Alias: "ダンスタスク",
+            TaskID: "DanceTask",
             ToDo: {
                 Method: "PostNomadEvent",
                 Data: {
                     event: "client.event",
                     data: {
-                        command: "disappear"
+                        command: "ダンスのタスクイベント"
                     }
                 }
             },
@@ -72,77 +110,23 @@ export const BaseMigration = {
                 Data: {
                     event: "message.event",
                     data: {
-                        message: "confirm"
-                    }
-                }¥*/
-                Method: "WaitUntil",//デバッグのため一時的にWaitUntilに変更
-                Data: {
-                    time: 1000
-                }
-            },
-            Dependencies: "changeturnendtypebeforetransfer",
-            Status: "Waiting"
-        },
-        {
-            Type: "SubTask",
-            Alias: "現在のデバイスを更新",
-            TaskID: "Migration",
-            ToDo: {
-                Method: "Transfer",
-                Data: {
-                    newClientID: "{{newClientID}}"
-                }
-            },
-            Check: {
-                /*
-                Method: "GetNomadEvent",
-                Data: {
-                    event: "relay.event",
-                    data:{
-                        CurrentClient: "{{newClientID}}"
+                        message: "ダンス完了"
                     }
                 }
-                    */
-                Method: "null",
-            },
-            Dependencies: "DisappearMotion",
-            Status: "Waiting"
-        },
-        {
-            Type: "SubTask",
-            Alias: "AppearMotion",
-            TaskID: "AppearMotion",
-            ToDo: {
-                Method: "PostNomadEvent",
-                Data: {
-                    event: "client.event",
-                    data: {
-                        command: "appear"
-                    }
-                }
-            },
-            Check: {
-                /*
-                Method: "GetNomadEvent",
-                Data: {
-                    event: "message.event",
-                    data: {
-                        message: "confirm"
-                    }
-                }
+                    
                 */
                 Method: "WaitUntil",
                 Data: {
-                    time: 1000
+                    time: 5000
                 }
             },
-            Dependencies: "Migration",
+            Dependencies: "PauseTask",
             Status: "Waiting"
         },
         {
             Type: "SubTask",
-            Alias: "ChangeTurnEndTypeAfterTransfer",
-            TaskID: "changeturnendtypeaftertransfer",
+            Alias: "ChangeTurnEndTypeAfterRobotDemo",
+            TaskID: "changeturnendtypeafterRobotDemo",
             ToDo: {
                 Method: "ChangeTurnEndType",
                 Data: {
@@ -152,9 +136,9 @@ export const BaseMigration = {
             Check: {
                 Method: "null"
             },
-            Dependencies: "AppearMotion",
+            Dependencies: "DanceTask",
             Status: "Waiting"
         },
-
+        
     ]
-};
+}

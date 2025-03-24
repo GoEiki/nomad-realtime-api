@@ -170,7 +170,7 @@ export const StateManager = () => {
 
                             "Comments": {
                                 "type": "string",
-                                "description": "タスクについてコメントを入力してください。"
+                                "description": "報告内容を裏付けるゲストの発話を入力してください。"
                             }
                         },
                         "required": ["Num", "Status", "Comments"]
@@ -191,7 +191,7 @@ export const StateManager = () => {
                             task.Status = 'Completed';
                             reloadqueue.value = true;
                             log(`タスク${Num}は正常に完了しました。${Comments}`);
-                            return { feedback: "タスクは正常に完了しました。次のステップへ進んでください。" };
+                            return { feedback: "報告を受理しました。" };
                         }
                         else {
                             log(`タスク${Num}が見つかりませんでした。`);
@@ -219,8 +219,14 @@ export const StateManager = () => {
             return false;
         },
         'ResetTaskHandler': (event: ToDo) => {
-            realtimestore.client?.removeTool("TaskReport");
-            realtimestore.client?.updateSession();
+            try{
+                realtimestore.client?.removeTool("TaskReport");
+                realtimestore.client?.updateSession();
+            }
+            catch(e){
+                log(`This is NOT error:${e}`);
+            }
+
             return true;
         },
         'UpdateSession': (event: ToDo) => {

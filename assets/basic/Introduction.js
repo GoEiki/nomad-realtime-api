@@ -41,12 +41,13 @@ export const Intorduction = {
                 Method: "UpdateInstruction",
                 Data: {
                     instructions: `{{headerinstructions}}
-                    あなたはユーザをこの部屋で楽しませる対話アシスタントです。
-                    初対面のユーザと仲良くなるために、以下の目的を達成するように会話を行なってください。
-                    また、目的を達成した時の報告TaskReportを忘れないでください。
-                    * 0:ユーザの名前を聞いてください。
-                    * 1:ユーザの好きな食べ物を聞いてください。
-                    * 2:ユーザの職業を聞いてください。
+                    これからゲストと初めて対面します。
+                    ゲストと仲良くなるために、以下の目的をすべて達成するように会話をしてください。
+                    また、目的を達成した時のFunction Callingを忘れないでください。
+                    * 0:自己紹介とデモストレーションの説明をしてください。ゲストから返事があったらFunction Calling(0)を行なってください。
+                    * 1:ゲストの名前を聞いてください。ゲストの名前を聞くことができたらFunction Calling(1)を行なってください。
+                    * 2:ゲストの好きな食べ物を聞いてください。ゲストの好きな食べ物を聞くことができたらFunction Calling(2)を行なってください。
+                    * 3:ゲストの職業を聞いてください。ゲストの職業を聞くことができたらFunction Calling(3)を行なってください。
                     {{footerinstructions}}`
                 }
             },
@@ -63,7 +64,7 @@ export const Intorduction = {
             ToDo: {
                 Method: "SetTaskHandler",
                 Data: {
-                    Target: ["AskName", "AskFood", "AskJob"]
+                    Target: ["AgentIntroduction","AskName", "AskFood", "AskJob"]
                 }
             },
             Check: {
@@ -86,7 +87,10 @@ export const Intorduction = {
                 }
             },
             Check: {
-                Method: "null"
+                Method: "WaitUntil",//2秒待つように変更
+                Data: {
+                    time: 2000
+                }
             },
             Dependencies: "settaskhandler",
             Status: "Waiting"
@@ -100,13 +104,16 @@ export const Intorduction = {
             Flow: [
                 {
                     Type: "SubTask",
-                    Alias: "名前を聞く",
-                    TaskID: "AskName",
+                    Alias: "自己紹介",
+                    TaskID: "AgentIntroduction",
                     ToDo: {
                         Method: "CreateResponse",
                         Data: {
                             response: {
-                                instructions: "ステップ「0:ユーザの名前を聞いてください。」を実行してください。"
+                                instructions: `以下のように自己紹介とデモストレーションの説明をしてください。
+                                「こんにちは、私は姿・形を変えながら常に一緒にいるパーソナルエージェント「Nomad Agent」です。
+                                本日はこの部屋の色々なものに乗り移りながら、あなたをサポートさせていただきます。
+                                よろしくお願いいたします！」`
                             }
                         }
                     },
@@ -114,6 +121,19 @@ export const Intorduction = {
                         Method: "Wait"
                     },
                     Dependencies: "null",
+                    Status: "Waiting"
+                },
+                {
+                    Type: "SubTask",
+                    Alias: "名前を聞く",
+                    TaskID: "AskName",
+                    ToDo: {
+                        Method: "null",
+                    },
+                    Check: {
+                        Method: "Wait"
+                    },
+                    Dependencies: "AgentIntroduction",
                     Status: "Waiting"
                 },
                 {
@@ -140,17 +160,12 @@ export const Intorduction = {
                     Alias: "好きな食べ物を聞く",
                     TaskID: "AskFood",
                     ToDo: {
-                        Method: "CreateResponse",
-                        Data: {
-                            response: {
-                                instructions: "ステップ「1:ユーザの好きな食べ物を聞いてください。」を実行してください。"
-                            }
-                        }
+                        Method: "null",
                     },
                     Check: {
                         Method: "Wait"
                     },
-                    Dependencies: "AskName",
+                    Dependencies: "ComplietedName",
                     Status: "Waiting"
                 },
                 {
@@ -177,17 +192,12 @@ export const Intorduction = {
                     Alias: "職業を聞く",
                     TaskID: "AskJob",
                     ToDo: {
-                        Method: "CreateResponse",
-                        Data: {
-                            response: {
-                                instructions: "ステップ「2:ユーザの職業を聞いてください。」を実行してください。"
-                            }
-                        }
+                        Method: "null",
                     },
                     Check: {
                         Method: "Wait"
                     },
-                    Dependencies: "AskFood",
+                    Dependencies: "ComplietedFood",
                     Status: "Waiting"
                 },
                 {
@@ -213,22 +223,6 @@ export const Intorduction = {
         },
         {
             Type: "SubTask",
-            Alias: "Instruction初期化",
-            TaskID: "resetinstruction",
-            ToDo: {
-                Method: "UpdateInstruction",
-                Data: {
-                    instructions: "{{headerinstructions}}{{defaultinstructions}}{{footerinstructions}}"
-                }
-            },
-            Check: {
-                Method: "null"
-            },
-            Dependencies: "conversationflow",
-            Status: "Waiting"
-        },
-        {
-            Type: "SubTask",
             Alias: "TaskHandler初期化",
             TaskID: "resettaskhandler",
             ToDo: {
@@ -237,7 +231,7 @@ export const Intorduction = {
             Check: {
                 Method: "null"
             },
-            Dependencies: "resetinstruction",
+            Dependencies: "conversationflow",
             Status: "Waiting"
         }
     ]
