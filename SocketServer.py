@@ -1,14 +1,15 @@
 import asyncio
 import websockets
 
-# クライアントからのデータを処理する
-async def handle_connection(websocket, path):
+async def handle_connection(websocket):
     async for message in websocket:
         print(f"Received from client: {message}")
         await websocket.send("Message received!")  # 確認用の応答
 
-# WebSocketサーバーを立ち上げる
-start_server = websockets.serve(handle_connection, "0.0.0.0", 8765)  # 全てのIPからの接続を許可
+async def start_server():
+    server = await websockets.serve(handle_connection, "0.0.0.0", 8765)  # 全てのIPからの接続を許可
+    print("WebSocket server started on ws://0.0.0.0:8765")
+    await server.wait_closed()  # サーバーを永続的に動作させる
 
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+if __name__ == "__main__":
+    asyncio.run(start_server())

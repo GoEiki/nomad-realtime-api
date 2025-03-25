@@ -14,7 +14,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      DefaultIPAdress: '10.0.1.71:3000',
+      DefaultIPAdress: '10.0.1.8:3000',
       DefaultUserID: 'user123',
     },
   }
