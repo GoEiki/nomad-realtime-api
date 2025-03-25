@@ -106,7 +106,7 @@ export const TransferToEarbuds = {
         },
         {
             Type: "SubTask",
-            Alias: "ロボットへ乗り移り",
+            Alias: "イヤホンへ乗り移り",
             TaskID: "MigrateToEarbuzz",
             ToDo: {
                 Method: "Replace",
@@ -114,8 +114,8 @@ export const TransferToEarbuds = {
                     Target: "MigrateToEarbuzz",
                     Task: "BaseMigration",
                     ReplaceData: {
-                        newDeviceName: "ロボット",
-                        newClientID: "{{ロボット_ID}}"
+                        newDeviceName: "イヤーバズ",
+                        newClientID: "{{イヤーバズ_ID}}"
                     }
                 }
             },
