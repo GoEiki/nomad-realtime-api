@@ -4,7 +4,7 @@ import { ConnectUser } from '@/composables/APIClient';
 const clientCanvasRef = ref<HTMLCanvasElement | undefined>(undefined);
 const serverCanvasRef = ref<HTMLCanvasElement | undefined>(undefined);
 const realtimestore = RealtimeStore(); // Pinia ストアを取得
-const { connectMultiConversation, disconnectConversation, setClient, ConversationHandler, setCanvas } = ConnectUser();
+const { connectMultiConversation, disconnectConversation, CancelResponse, setClient, ConversationHandler, setCanvas } = ConnectUser();
 const { connect, disconnect, sendMessage, isConnected } = useWebSocket();
 const usernameInput = ref('');
 const username = ref<string | null>(null);
@@ -102,6 +102,9 @@ async function sendTestMessage() {
     </button>
     <button @click="sendTestMessage" :style="{ backgroundColor: '#2196F3', color: '#fff' }" class="styled-button">
         SEND TEST
+    </button>
+    <button @click="CancelResponse()" >
+        Cancel Response
     </button>
     <div class="audio-waveform">
         <h3>USER</h3>
