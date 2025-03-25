@@ -4,7 +4,7 @@ interface ParsedStatus {
   instructions: string;
   voice: string;
   input_audio_transcription: { model: string } | null;
-  turn_detection: { type: string } ;
+  turn_detection: { type: string } | null;
   tool_choice: string;
   temperature: number;
   max_response_output_tokens: number;
@@ -16,7 +16,7 @@ const parsedStatus = ref<ParsedStatus>({
   instructions: "awaiting connection...",
   voice: "awaiting connection...",
   input_audio_transcription: null,
-  turn_detection: {type:'semantic_vad'},
+  turn_detection: null,
   tool_choice: "awaiting connection...",
   temperature: 0.0,
   max_response_output_tokens: 0
@@ -118,11 +118,11 @@ onMounted(() => {
   <div class="status-display">
     <div v-if="parsedStatus">
       <div class="swipe-selector">
-        <div :class="['swipe-option', { active: parsedStatus.turn_detection.type === 'semantic_vad' }]" @click="changeVadType('none')">
-          SEMANTIC VAD </div>
+        <div :class="['swipe-option', { active: parsedStatus.turn_detection === null }]" @click="changeVadType('none')">
+          MANUAL MODE</div>
         <div
-          :class="['swipe-option', { active: parsedStatus.turn_detection.type === 'server_vad' }]"
-          @click="changeVadType('server_vad')">SERVER VAD</div>
+          :class="['swipe-option', { active: parsedStatus.turn_detection !== null && parsedStatus.turn_detection.type === 'server_vad' }]"
+          @click="changeVadType('server_vad')">SERVER VAD MODE</div>
       </div>
       <h3>Instructions</h3>
       <p>{{ parsedStatus.instructions }}</p>

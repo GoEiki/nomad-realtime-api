@@ -46,7 +46,7 @@ export const DefaultConfig = {
             ##タスク`,
             footerinstructions: "",
             defaultinstructions: "現在、タスクはありません。自由にゲストを楽しませてください。",
-            turn_detection: "semantic_vad",
+            turn_detection: "server_vad",
             voice: "sage"
         }
     },

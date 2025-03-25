@@ -244,9 +244,7 @@ export const StateManager = () => {
             if (event.Data.value === 'none') {
 
                 realtimestore.client?.updateSession({
-                    turn_detection: {
-                        type: 'semantic_vad',
-                    }
+                    turn_detection: null
                 });
 
             } else {
