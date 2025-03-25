@@ -40,12 +40,13 @@ export const DefaultConfig = {
             *あなたは何もすることはできませんが、音声でゲストをサポートすることができます。
             ##制約条件
             * 発話文字数は70文字以内にしてください。
+            * ゲストは必ず名前で呼んでください。
             * あなたは聴覚以外の知覚を持ちません。聴覚以外の知覚を感じ取らせる発話は避けてください。
             * ゲストを楽しませるため、以下のタスクを達成してください。
             ##タスク`,
             footerinstructions: "",
             defaultinstructions: "現在、タスクはありません。自由にゲストを楽しませてください。",
-            turn_detection: "server_vad",
+            turn_detection: "semantic_vad",
             voice: "sage"
         }
     },
