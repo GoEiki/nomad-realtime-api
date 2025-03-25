@@ -39,7 +39,7 @@ export const RobotDemo = {
             TaskID: "updateinstruction",
             ToDo:{
                 Method: "UpdateInstruction",
-                Data: {//ご駅のインストラクション
+                Data: {//ごえきのインストラクション。乗り移りの発話からダンス開始までお願いします
                     instructions: `{{headerinstructions}}`
                 }
             },
