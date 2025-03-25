@@ -60,7 +60,9 @@ export const Ending = {
                 Method: "CreateResponse",
                 Data: {
                     response: {
-                        instructions: "イヤホンに乗り移ってきたことを伝え、音声のやり取りができるか確認してください。"
+                        instructions: `デモンストレーションの終了をゲストに伝えてください。
+                        例「これですべてのデモンストレーションが終了しました。お疲れ様でした。
+                        本日は「Nomad Agent」体験していただき誠にありがとうございました。`
                     }
                 }
             },
