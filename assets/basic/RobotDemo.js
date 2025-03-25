@@ -157,38 +157,7 @@ export const RobotDemo = {
             Status: "Waiting"
         },
 
-        {
-            Type: "SubTask",
-            Alias: "ダンスタスク",
-            TaskID: "DanceTask",
-            ToDo: {
-                Method: "PostNomadEvent",
-                Data: {
-                    event: "client.event",
-                    data: {
-                        command: "ダンスのタスクイベント"
-                    }
-                }
-            },
-            Check: {
-                /*
-                Method: "GetNomadEvent",
-                Data: {
-                    event: "message.event",
-                    data: {
-                        message: "ダンス完了"
-                    }
-                }
-                    
-                */
-                Method: "WaitUntil",
-                Data: {
-                    time: 5000
-                }
-            },
-            Dependencies: "PauseTask",
-            Status: "Waiting"
-        },
+
         {
             Type: "SubTask",
             Alias: "ChangeTurnEndTypeAfterRobotDemo",
@@ -202,7 +171,7 @@ export const RobotDemo = {
             Check: {
                 Method: "null"
             },
-            Dependencies: "DanceTask",
+            Dependencies: "PauseTask",
             Status: "Waiting"
         },
         
