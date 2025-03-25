@@ -41,17 +41,25 @@ export const EspressoShort = {
                 Method: "UpdateInstruction",
                 Data: {
                     instructions: `{{headerinstructions}}
+                    あなたは、今イヤホンに乗り移ってきました。
                     これからゲストの方に「一杯のエスプレッソを淹れる」タスクに取り組んでいただきます。
+                    その後、ゲストにはソファに座ってもらい、あなたはテーブル上のロボットに乗り移ります。
                     以下がこのタスクのゴールドスタンダードになります。順番を守ってステップバイステップで進めてください。
                     また、ゲストの方がタスクを完了された際にはFunction Callingで報告をお願いいたします。
-                    * 0:ゲストの方にタスクを開始する準備ができたかどうかの確認を取ってください。確認が取れたらFunction Calling(0)を行ってください。
-                    * 1:フィルターホルダーにコーヒー粉を詰めてください。（量は計量スプーンに山盛り一杯です）確認が取れたらFunction Calling(1)を行ってください。
-                    * 2:フィルターホルダーをエスプレッソマシン本体に取り付けてください。確認が取れたらFunction Calling(2)を行ってください。
-                    * 3:カップをセットしてください。確認が取れたらFunction Calling(3)を行ってください。
-                    * 4:電源を入れてください。確認が取れたらFunction Calling(4)を行ってください。
-                    * 5:自動コーヒーボタンを押してください。（自動コーヒーボタンは電源ボタンの隣です）確認が取れたらFunction Calling(5)を行ってください。
-                    * 6:エスプレッソが適切に抽出されているかどうか確認し、問題がなければタスクを完了してください。確認が取れたらFunction Calling(6)を行ってください。
-                    * 7:次のタスクへ移行してください。移行するためにはFunction Calling(7)を行ってください。
+                    * 0:イヤホンに乗り移ってきたことを伝え、音声のやり取りができるか確認してください。確認が取れたらFunction Calling(0)を行ってください。
+                     例「イヤホンに乗り移りました。聞こえていますか？」
+                    * 1:ゲストにエスプレッソマシンの前までくるように誘導してください。確認が取れたらFunction Calling(1)を行ってください。
+                     例「エスプレッソマシンの前に来てください。」
+                    * 2:ゲストにタスクを開始する準備ができたかどうかの確認を取ってください。確認が取れたらFunction Calling(2)を行ってください。
+                     例「それでは、今からエスプレッソを淹れていただきます。準備はいいですか？」
+                    * 3:フィルターホルダーにコーヒー粉を詰めてください。（量は計量スプーンに山盛り一杯です。タンパーを使って軽く押し詰める必要があります。）確認が取れたらFunction Calling(3)を行ってください。
+                    * 4:フィルターホルダーをエスプレッソマシン本体に取り付けてください。確認が取れたらFunction Calling(4)を行ってください。
+                    * 5:カップをセットしてください。確認が取れたらFunction Calling(5)を行ってください。
+                    * 6:電源を入れてください。（湯が温まるまで時間がかかるので、ボタンが点灯するまで待ってください）確認が取れたらFunction Calling(6)を行ってください。
+                    * 7:自動コーヒーボタンを押してください。（自動コーヒーボタンは電源ボタンの隣です）確認が取れたらFunction Calling(7)を行ってください。
+                    * 8:エスプレッソが適切に抽出されているかどうか確認し、問題がなければタスクを完了してください。確認が取れたらFunction Calling(8)を行ってください。
+                    * 9:次にソファでくつろぐことを勧め、あなたはロボットへ乗り移ることを伝えてください。乗り移るためにFunction Calling(9)を行ってください。
+                     「ぜひソファでくつろいでください。私はテーブル上のロボットへ乗り移ります。」
                     {{footerinstructions}}`
                 }
             },
@@ -81,7 +89,7 @@ export const EspressoShort = {
             ToDo: {
                 Method: "SetTaskHandler",
                 Data: {
-                    Target: ["Task0", "Task1", "Task2","Task3", "Task4", "Task5","Task6","Task7"]
+                    Target: ["Task0", "Task1", "Task2","Task3", "Task4", "Task5","Task6","Task7","Task8","Task9"]
                 }
             },
             Check: {
@@ -99,13 +107,13 @@ export const EspressoShort = {
             Flow: [
                 {
                     Type: "SubTask",
-                    Alias: "ステップ１：ユーザーの確認",
+                    Alias: "ステップ１：乗り移りの確認",
                     TaskID: "Task0",
                     ToDo: {
                         Method: "CreateResponse",
                         Data: {
                             response: {
-                                instructions: "ゲストの方にタスクを開始する準備ができたかどうかの確認を取ってください。"
+                                instructions: "イヤホンに乗り移ってきたことを伝え、音声のやり取りができるか確認してください。"
                             }
                         }
                     },
@@ -117,7 +125,7 @@ export const EspressoShort = {
                 },
                 {
                     Type: "SubTask",
-                    Alias: "ステップ2：コーヒー粉を詰める",
+                    Alias: "ステップ2：エスプレッソマシンの前まで誘導",
                     TaskID: "Task1",
                     ToDo: {
                         Method: "null",
@@ -130,7 +138,7 @@ export const EspressoShort = {
                 },
                 {
                     Type: "SubTask",
-                    Alias: "ステップ3：本体に取り付ける",
+                    Alias: "ステップ3：ユーザーの確認",
                     TaskID: "Task2",
                     ToDo: {
                         Method: "null",
@@ -143,7 +151,7 @@ export const EspressoShort = {
                 },
                 {
                     Type: "SubTask",
-                    Alias: "ステップ4：カップをセットする",
+                    Alias: "ステップ4：コーヒー粉を詰める",
                     TaskID: "Task3",
                     ToDo: {
                         Method: "null",
@@ -156,7 +164,7 @@ export const EspressoShort = {
                 },
                 {
                     Type: "SubTask",
-                    Alias: "ステップ5：電源を入れる",
+                    Alias: "ステップ5：本体に取り付ける",
                     TaskID: "Task4",
                     ToDo: {
                         Method: "null",
@@ -169,7 +177,7 @@ export const EspressoShort = {
                 },
                 {
                     Type: "SubTask",
-                    Alias: "ステップ6：自動コーヒーボタンを押す",
+                    Alias: "ステップ6：カップをセットする",
                     TaskID: "Task5",
                     ToDo: {
                         Method: "null",
@@ -182,7 +190,7 @@ export const EspressoShort = {
                 },
                 {
                     Type: "SubTask",
-                    Alias: "ステップ7：抽出を確認する",
+                    Alias: "ステップ7：電源を入れる",
                     TaskID: "Task6",
                     ToDo: {
                         Method: "null",
@@ -195,7 +203,7 @@ export const EspressoShort = {
                 },
                 {
                     Type: "SubTask",
-                    Alias: "ステップ7：次のタスクへ進む",
+                    Alias: "ステップ7：自動コーヒーボタンを押す",
                     TaskID: "Task7",
                     ToDo: {
                         Method: "null",
@@ -205,7 +213,34 @@ export const EspressoShort = {
                     },
                     Dependencies: "Task6",
                     Status: "Waiting"
-                }
+                },
+                {
+                    Type: "SubTask",
+                    Alias: "ステップ8：抽出を確認する",
+                    TaskID: "Task8",
+                    ToDo: {
+                        Method: "null",
+                    },
+                    Check: {
+                        Method: "Wait"
+                    },
+                    Dependencies: "Task7",
+                    Status: "Waiting"
+                },
+                {
+                    Type: "SubTask",
+                    Alias: "ステップ9：ソファでくつろぐことを勧める",
+                    TaskID: "Task9",
+                    ToDo: {
+                        Method: "null",
+                    },
+                    Check: {
+                        Method: "Wait"
+                    },
+                    Dependencies: "Task8",
+                    Status: "Waiting"
+                },
+
             ]
         },
         {

@@ -42,12 +42,21 @@ export const Intorduction = {
                 Data: {
                     instructions: `{{headerinstructions}}
                     これからゲストと初めて対面します。
-                    ゲストと仲良くなるために、以下の目的をすべて達成するように会話をしてください。
-                    また、目的を達成した時のFunction Callingを忘れないでください。
+                    最初に自己紹介を含む、デモンストレーションの説明を行います。
+                    その後、ゲストにはこの部屋にあるエスプレッソマシンを使ってエスプレッソを淹れるタスクに取り組んでいただきます。
+                    タスクをサポートするために、まずあなたはイヤホンに乗り移る必要があります。
+                    次のタスクへ移行するため、以下の目的をすべて達成するように会話を進めてください。
                     * 0:自己紹介とデモストレーションの説明をしてください。ゲストから返事があったらFunction Calling(0)を行なってください。
                     * 1:ゲストの名前を聞いてください。ゲストの名前を聞くことができたらFunction Calling(1)を行なってください。
-                    * 2:ゲストの好きな食べ物を聞いてください。ゲストの好きな食べ物を聞くことができたらFunction Calling(2)を行なってください。
-                    * 3:ゲストの職業を聞いてください。ゲストの職業を聞くことができたらFunction Calling(3)を行なってください。
+                     例「まず、あなたの名前を教えていただけますか。」
+                    * 2:ゲストの職業を聞いてください。ゲストの職業を聞くことができたらFunction Calling(2)を行なってください。
+                     例「〇〇さん、あなたの職業は何ですか。」
+                    * 3:ゲストにエスプレッソを勧め、Function Calling(3)を行なってください。このステップが終了すると次のタスクに移行します。
+                     例「〇〇さん、この部屋にあるエスプレッソマシンでエスプレッソを淹れることができます。いかがですか。」
+                    * 4: タスクをサポートするためにイヤホンに乗り移る必要があることを伝え、Function Calling(4)を行ってください。
+                     例「タスクをサポートするには、イヤホンに乗り移る必要があります。」
+                    * 5: ゲストにイヤホンをつけてもらい、つけたことが確認できたらFunction Calling(5)を行ってください。
+                     例「イヤホンをつけてください。」
                     {{footerinstructions}}`
                 }
             },
@@ -64,7 +73,7 @@ export const Intorduction = {
             ToDo: {
                 Method: "SetTaskHandler",
                 Data: {
-                    Target: ["AgentIntroduction","AskName", "AskFood", "AskJob"]
+                    Target: ["AgentIntroduction","AskName", "AskJob","AskEspresso","TransferConfirm","CheckEarbuds"],
                 }
             },
             Check: {
@@ -212,38 +221,7 @@ export const Intorduction = {
                     Dependencies: "AskName",
                     Status: "Waiting"
                 },
-                {
-                    Type: "SubTask",
-                    Alias: "好きな食べ物を聞く",
-                    TaskID: "AskFood",
-                    ToDo: {
-                        Method: "null",
-                    },
-                    Check: {
-                        Method: "Wait"
-                    },
-                    Dependencies: "ComplietedName",
-                    Status: "Waiting"
-                },
-                {
-                    Type: "SubTask",
-                    Alias: "食べ物が聞けた",
-                    TaskID: "ComplietedFood",
-                    ToDo: {
-                        Method: "PostNomadEvent",
-                        Data: {
-                            event: "client.event",
-                            data: {
-                                command:"hello"
-                            }
-                        }
-                    },
-                    Check: {
-                        Method: "null"
-                    },
-                    Dependencies: "AskFood",
-                    Status: "Waiting"
-                },
+                
                 {
                     Type: "SubTask",
                     Alias: "職業を聞く",
@@ -254,7 +232,7 @@ export const Intorduction = {
                     Check: {
                         Method: "Wait"
                     },
-                    Dependencies: "ComplietedFood",
+                    Dependencies: "ComplietedName",
                     Status: "Waiting"
                 },
                 {
@@ -275,7 +253,46 @@ export const Intorduction = {
                     },
                     Dependencies: "AskJob",
                     Status: "Waiting"
-                }
+                },
+                {
+                    Type: "SubTask",
+                    Alias: "エスプレッソを勧める",
+                    TaskID: "AskEspresso",
+                    ToDo: {
+                        Method: "null",
+                    },
+                    Check: {
+                        Method: "Wait"
+                    },
+                    Dependencies: "ComplietedJob",
+                    Status: "Waiting"
+                },
+                {
+                    Type: "SubTask",
+                    Alias: "乗り移りの説明",
+                    TaskID: "TransferConfirm",
+                    ToDo: {
+                        Method: "null",
+                    },
+                    Check: {
+                        Method: "Wait"
+                    },
+                    Dependencies: "AskEspresso",
+                    Status: "Waiting"
+                },
+                {
+                    Type: "SubTask",
+                    Alias: "イヤホンの確認",
+                    TaskID: "CheckEarbuds",
+                    ToDo: {
+                        Method: "null",
+                    },
+                    Check: {
+                        Method: "Wait"
+                    },
+                    Dependencies: "TransferConfirm",
+                    Status: "Waiting"
+                },
             ]
         },
         {
