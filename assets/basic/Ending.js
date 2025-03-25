@@ -54,6 +54,24 @@ export const Ending = {
         },
         {
             Type: "SubTask",
+            Alias: "デモ終了",
+            TaskID: "EndDemo",
+            ToDo: {
+                Method: "CreateResponse",
+                Data: {
+                    response: {
+                        instructions: "イヤホンに乗り移ってきたことを伝え、音声のやり取りができるか確認してください。"
+                    }
+                }
+            },
+            Check: {
+                Method: "Wait"
+            },
+            Dependencies: "updateinstruction",
+            Status: "Waiting"
+        },
+        {
+            Type: "SubTask",
             Alias: "タスク一時停止",
             TaskID: "PauseTask",
             ToDo: {
@@ -74,7 +92,7 @@ export const Ending = {
                     }
                 }
             },
-            Dependencies: "updateinstruction",
+            Dependencies: "EndDemo",
             Status: "Waiting"
         },
         {
