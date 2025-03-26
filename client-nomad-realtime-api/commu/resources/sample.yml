@@ -1,0 +1,62 @@
+#
+# CUMClientのyaml設定ファイル
+# author=Kazuki Sakai (2018.2.10)
+# <<YAMLの共通メモ>>
+# コメントは'#'
+# 「TABキー」は使わない．階層下げは半角スペースを２つ
+#「キー値:」の後に値を入れる場合は，「:」の後に半角スペースが必要
+#
+# voice name: anzu,koutarou,maki,yuuto,reina,chihiro,taichi,nozomi,yamato,miyabi, (_westをつけると関西風)
+#             jpn_girl, jpn_boy, jpn_bi, eng_girl, eng_bi, chi_hong, chi_twn
+
+Setting:
+  robot_num: 2
+  robots:
+    robot_0:
+      type: commu
+      voice:
+        name: yamato
+        pitch: 0.7
+        speed: 1.5
+        volume: 50
+        pause: 800
+    robot_1:
+      type: sota
+      voice:
+        name: chihiro
+        pitch: 1.0
+        speed: 1.0
+        volume: 1.0
+        pause: 800
+
+# LookTable Configuration
+LookTable:
+  position:
+    r0_r1: [1500, 250, 700]
+    r0_r2: [500, 250, 300]
+    r2_r1: [-500, 250, 300]
+    r2_r0: [-1000, 250, 1000]
+    r1_r0: [-1500, 250, 700]
+    r1_r2: [1000, 250, 1000]
+    r0_r0: [0, 550, 1000]
+    r1_r1: [0, 550, 1000]
+    r2_r2: [0, 300, 1000]
+    r0_user: [-400, 750, 1000]
+    r1_user: [200, 750, 1000]
+    r2_user: [0, 450, 1000]
+    right: [-2000, 250, 1000]
+    left: [2000, 250, 1000]
+    center: [0, 300, 1000]
+  contribution_ratio:
+    normal: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+    onlyneck: [0.0, 0.0, 1.0, 1.0, 0.0, 0.0]
+    onlyeye: [0.0, 0.0, 0.0, 0.0, 1.0, 1.0]
+    onlyhead: [0.0, 0.0, 1.0, 1.0, 1.0, 1.0]
+  speed:
+    quick: [60, 60, 100, 100, 120, 120, 120]
+    normal: [30, 30, 30, 30, 100, 100, 100]
+    slow: [15, 15, 15, 15, 50, 50, 50]
+
+# Gesture Configuration
+GestureFilePath: gesture/
+
