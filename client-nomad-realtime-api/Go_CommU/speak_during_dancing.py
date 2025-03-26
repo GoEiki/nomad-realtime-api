@@ -29,7 +29,7 @@ class AudioRequestHandler(BaseHTTPRequestHandler):
                 elif data['speak'] == 'dont':
                     audio_file = 'dont_believe.wav'
                 elif data['speak'] == 'tension':
-                    audio_file = 'huh.wav'
+                    audio_file = 'tension-up.wav'
                 else:
                     self.send_response(400)
                     self.send_header('Content-type', 'text/plain')
