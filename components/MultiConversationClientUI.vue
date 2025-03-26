@@ -103,9 +103,7 @@ async function sendTestMessage() {
     <button @click="sendTestMessage" :style="{ backgroundColor: '#2196F3', color: '#fff' }" class="styled-button">
         SEND TEST
     </button>
-    <button @click="CancelResponse()" >
-        Cancel Response
-    </button>
+
     <div class="audio-waveform">
         <h3>USER</h3>
         <canvas ref="clientCanvasRef" width="200" height="100" class="styled-canvas"></canvas>
@@ -114,6 +112,9 @@ async function sendTestMessage() {
         <h3>AGENT</h3>
         <canvas ref="serverCanvasRef" width="200" height="100" class="styled-canvas"></canvas>
     </div>
+    <button @click="CancelResponse()" >
+        Cancel Response
+    </button>
 </template>
 
 <style scoped></style>
