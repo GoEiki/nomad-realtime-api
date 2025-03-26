@@ -89,6 +89,25 @@ const kyakuInstructions = ref(`
     <button @click="CreateResponsewithConstantInstruction(kyakuInstructions, 'kyaku')">
         お客さんに話してください
     </button>
+    <button @click="CreateResponsewithConstantInstruction(kyakuInstructions, 'kyaku')">
+        お客さんに話してください
+    </button>
+    <button @click="CreateResponsewithConstantInstruction(ogawaInstructions, 'ogawa')">
+        小川さんに話してください
+    </button>
+    <button @click="CreateResponsewithConstantInstruction(kyakuInstructions, 'kyaku')">
+        お客さんに話してください
+    </button>
+    <button @click="CreateResponsewithConstantInstruction(kyakuInstructions, 'kyaku')">
+        お客さんに話してください
+    </button>
+    <button @click="CreateResponsewithConstantInstruction(ogawaInstructions, 'ogawa')">
+        小川さんに話してください
+    </button>
+    <button @click="CreateResponsewithConstantInstruction(kyakuInstructions, 'kyaku')">
+        お客さんに話してください
+    </button>
+
     </div>
 </template>
 <style scoped>
