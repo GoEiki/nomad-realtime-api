@@ -15,7 +15,7 @@ class EarbuzzApi(Base):
         return super().disappear(websocket)
 
 
-def play_wav(file_path, output_index):
+def play_wav(file_path):
     # waveファイルを読み込む
     wf = wave.open(file_path, 'rb')
 
@@ -25,7 +25,6 @@ def play_wav(file_path, output_index):
     stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
                     channels=wf.getnchannels(),
                     rate=wf.getframerate(),
-                    output_device_index=output_index,
                     output=True)
 
     # データを読み込み、再生
