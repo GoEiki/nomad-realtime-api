@@ -314,7 +314,7 @@ export const Intorduction = {
         {
             Type: "SubTask",
             Alias: "タスク一時停止",
-            TaskID: "PauseTask",
+            TaskID: "PauseTask2",
             ToDo: {
                 Method: "PostNomadEvent",
                 Data: {
