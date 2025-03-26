@@ -78,7 +78,7 @@ export const RobotDemo = {
                 Data: {
                     event: "notify.event",
                     data: {
-                        message: "タスクを一時停止します。完了時に以下のボタンを押してください"
+                        message: "タスクを一時停止します。完了時に本タスクの状態を変更してください"
                     }
                 }
             },
