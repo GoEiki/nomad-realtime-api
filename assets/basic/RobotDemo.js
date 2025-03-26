@@ -83,13 +83,7 @@ export const RobotDemo = {
                 }
             },
             Check: {
-                Method: "GetNomadEvent",
-                Data: {
-                    event: "message.event",
-                    data: {
-                        message: "confirm"
-                    }
-                }
+                Method: "Wait",
             },
             Dependencies: "changeturnendtypebeforeRobotDemo",
             Status: "Waiting"
