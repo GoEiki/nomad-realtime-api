@@ -62,14 +62,11 @@ function CreateResponsewithConstantInstruction(instructions: string, target: 'og
 // 長い `instructions` を変数に格納
 const ogawaInstructions = ref(`
 オガワさんに話しかけてください。
-どちらに話しかけているのか分かるように、発話の前に必ず「オガワさん、〜〜」 と呼びかける。
-それぞれの話題について **3回発話** したら次のタスクに移る。
+
 `);
 const kyakuInstructions = ref(`
 ゲストに話しかけてください。
-どちらに話しかけているのか分かるように、最初に必ずゲストさんの名前を聞いて、
-発話の前に必ず「(ゲストの名前)さん、〜〜」 と呼びかける。
-それぞれの話題について **3回発話** したら次のタスクに移る。
+
 `);
 </script>
 <template>
@@ -165,6 +162,7 @@ send-button:active {
     margin: 12px 0;
 }
 </style>
+
 
 
 
