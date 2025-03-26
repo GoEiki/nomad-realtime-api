@@ -119,10 +119,13 @@ onMounted(() => {
     <div v-if="parsedStatus">
       <div class="swipe-selector">
         <div :class="['swipe-option', { active: parsedStatus.turn_detection === null }]" @click="changeVadType('none')">
-          MANUAL MODE</div>
+          MANUAL</div>
         <div
           :class="['swipe-option', { active: parsedStatus.turn_detection !== null && parsedStatus.turn_detection.type === 'server_vad' }]"
-          @click="changeVadType('server_vad')">SERVER VAD MODE</div>
+          @click="changeVadType('server_vad')">SERVER VAD</div>
+        <div
+          :class="['swipe-option', { active: parsedStatus.turn_detection !== null && parsedStatus.turn_detection.type === 'semantic_vad' }]"
+          @click="changeVadType('semantic_vad')">SEMANTIC VAD</div>
       </div>
       <h3>Instructions</h3>
       <p>{{ parsedStatus.instructions }}</p>

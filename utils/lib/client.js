@@ -15,7 +15,7 @@ import { RealtimeUtils } from './utils.js';
 
 /**
  * @typedef {Object} TurnDetectionServerVadType
- * @property {"server_vad"} type
+ * @property {"server_vad"|"semantic_vad"} type
  * @property {number} [threshold]
  * @property {number} [prefix_padding_ms]
  * @property {number} [silence_duration_ms]
@@ -430,7 +430,7 @@ export class RealtimeClient extends RealtimeEventHandler {
 
   /**
    * Gets the active turn detection mode
-   * @returns {"server_vad"|null}
+   * @returns {"server_vad"|"semantic_vad"|null}
    */
   getTurnDetectionType() {
     return this.sessionConfig.turn_detection?.type || null;

@@ -242,20 +242,24 @@ export const StateManager = () => {
         'ChangeTurnEndType': (event: ToDo) => {
             console.log('ChangeTurnEndType called');
             if (event.Data.value === 'none') {
-
                 realtimestore.client?.updateSession({
                     turn_detection: null
                 });
-
-            } else {
-
+            } else if(event.Data.value === 'server_vad'){ 
                 realtimestore.client?.updateSession({
                     turn_detection: {
                         type: 'server_vad',
                     },
                 });
-
             }
+            else if(event.Data.value === 'semantic_vad'){ 
+                realtimestore.client?.updateSession({
+                    turn_detection: {
+                        type: 'semantic_vad',
+                    },
+                });
+            }
+            else{return false;}
             notify('ChangeTurnEndType called');
             return true;
         },
