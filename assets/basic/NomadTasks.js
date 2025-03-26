@@ -74,7 +74,7 @@ export const NomadTasks = {
             ToDo: {
                 Method: "TaskQueue",
                 Data: {
-                    Task:"BaseMigration",
+                    Task:"ReplaceMigration",
                     ReplaceData: {
                         newDeviceName: "イヤーバズ",
                         newClientID: "{{イヤーバズ_ID}}"
@@ -111,7 +111,7 @@ export const NomadTasks = {
             ToDo: {
                 Method: "TaskQueue",
                 Data: {
-                    Task:"BaseMigration",
+                    Task:"ReplaceMigration",
                     ReplaceData: {
                         newDeviceName: "ロボット",
                         newClientID: "{{ロボット_ID}}"
