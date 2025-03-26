@@ -254,7 +254,6 @@ export default defineWebSocketHandler({
         console.error('Name is null');
         peer.close();
       }
-      users[userId].CurrentClient = peer.id;
     }
     users[userId].connection.on('message', (message) => {
       // Realtime APIのサーバーイベントはそのままクライアントに返す
