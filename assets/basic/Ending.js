@@ -60,14 +60,14 @@ export const Ending = {
                 Method: "CreateResponse",
                 Data: {
                     response: {
-                        instructions: `デモンストレーションの終了をゲストに伝えてください。
+                        instructions: `以下の例に従いデモンストレーションの終了をゲストに伝えてください。
                         例「これですべてのデモンストレーションが終了しました。お疲れ様でした。
-                        本日は「Nomad Agent」体験していただき誠にありがとうございました。`
+                        本日は「Nomad Agent」体験していただき誠にありがとうございました。」`
                     }
                 }
             },
             Check: {
-                Method: "Wait"
+                Method: "null"
             },
             Dependencies: "updateinstruction",
             Status: "Waiting"
