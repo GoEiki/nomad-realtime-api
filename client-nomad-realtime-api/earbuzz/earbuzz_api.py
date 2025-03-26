@@ -2,6 +2,7 @@ from base import Base
 import wave
 import pyaudio
 import time
+import uvicorn
 
 class EarbuzzApi(Base):
     def appear(self, websocket = None):
@@ -45,3 +46,7 @@ def play_wav(file_path, output_index):
 
     # ファイルを閉じる
     wf.close()
+
+if __name__=='__main__':
+    earbuzz_api = EarbuzzApi()
+    uvicorn.run(earbuzz_api.app, host="0.0.0.0", port=8765)
