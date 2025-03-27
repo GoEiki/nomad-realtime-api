@@ -41,15 +41,13 @@ class BrowserApi(Base):
 
 
     async def appear(self, websocket=None):
-        asyncio.create_task(self.broadcast('appear'))
-        # await asyncio.sleep(2)
+        await self.broadcast('appear')
         play_wav('r-appear.wav')
         return await super().appear(websocket)
 
 
     async def disappear(self, websocket=None):
-        asyncio.create_task(self.broadcast('disappear'))
-        # await asyncio.sleep(2)
+        await self.broadcast('disappear')
         play_wav('r-disappear.wav')
         return await super().disappear(websocket)
 
