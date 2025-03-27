@@ -102,7 +102,7 @@ export const BaseMigration = {
                 }¥*/
                 Method: "WaitUntil",//デバッグのため一時的にWaitUntilに変更
                 Data: {
-                    time: 1000
+                    time: 1500
                 }
             },
             Dependencies: "changeturnendtypebeforetransfer",
@@ -157,7 +157,7 @@ export const BaseMigration = {
                 */
                 Method: "WaitUntil",
                 Data: {
-                    time: 1000
+                    time: 1500
                 }
             },
             Dependencies: "Migration",

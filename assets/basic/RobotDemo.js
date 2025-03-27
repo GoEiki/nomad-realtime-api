@@ -55,22 +55,6 @@ export const RobotDemo = {
             Dependencies: "null",
             Status: "Waiting"
         },
-        {
-            Type: "SubTask",
-            Alias: "ChangeTurnEndTypeBeforeRobotDemo",
-            TaskID: "changeturnendtypebeforeRobotDemo",
-            ToDo: {
-                Method: "ChangeTurnEndType",
-                Data: {
-                    value: "none"
-                }
-            },
-            Check: {
-                Method: "null"
-            },
-            Dependencies: "updateinstruction",
-            Status: "Waiting"
-        },
 
         
     ]
