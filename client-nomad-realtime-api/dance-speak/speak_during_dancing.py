@@ -30,6 +30,12 @@ class AudioRequestHandler(BaseHTTPRequestHandler):
                     audio_file = 'dont_believe.wav'
                 elif data['speak'] == 'tension':
                     audio_file = 'tension-up.wav'
+                elif data['speak'] == 'yeah':
+                    audio_file = 'yeah.wav'
+                elif data['speak'] == 'dancetogether':
+                    audio_file = 'dancetogether.wav'
+                elif data['speak'] == 'happy':
+                    audio_file = 'happy.wav'
                 else:
                     self.send_response(400)
                     self.send_header('Content-type', 'text/plain')
