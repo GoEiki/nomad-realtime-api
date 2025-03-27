@@ -61,7 +61,7 @@ class BrowserApi(Base):
 
     async def dance(self, websocket=None):
         await self.broadcast('dancestart')
-        await asyncio.sleep(22)
+        await asyncio.sleep(25)
         await self.broadcast('dancestop')
         await super().dance(websocket)
 

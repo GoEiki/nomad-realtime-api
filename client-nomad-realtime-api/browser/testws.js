@@ -274,6 +274,7 @@ function updateRotationAnimation() {
 function updateDancingAnimation() {
   if (!mobiusConfig.isDancing) return;
 
+  // 拡大・縮小のアニメーション
   if (mobiusConfig.isExpanding) {
     mobiusConfig.currentScale += mobiusConfig.scaleChangeSpeed;
     if (mobiusConfig.currentScale >= mobiusConfig.maxScale) {
@@ -290,6 +291,16 @@ function updateDancingAnimation() {
     }
   }
 
+  // Y軸方向にジャンプするアニメーション（サイン波を使用）
+  const time = performance.now() * 0.002; // 経過時間を取得
+  mobiusStrip.position.y = Math.sin(time * 4) * 0.5; // 上下に動く
+
+  // X、Y、Z軸のスピンを交互に変化
+  mobiusStrip.rotation.x += 0.02 * Math.sin(time * 3);
+  mobiusStrip.rotation.y += 0.02 * Math.cos(time * 3);
+  mobiusStrip.rotation.z += 0.015 * Math.sin(time * 2);
+
+  // モデルのスケールを適用
   mobiusStrip.scale.set(mobiusConfig.currentScale, mobiusConfig.currentScale, mobiusConfig.currentScale);
 }
 
