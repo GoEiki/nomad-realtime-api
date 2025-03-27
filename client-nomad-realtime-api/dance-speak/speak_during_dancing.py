@@ -33,7 +33,7 @@ class AudioRequestHandler(BaseHTTPRequestHandler):
                 elif data['speak'] == 'yeah':
                     audio_file = 'yeah.wav'
                 elif data['speak'] == 'dancetogether':
-                    audio_file = 'dancetogether.wav'
+                    audio_file = 'dance_together.wav'
                 elif data['speak'] == 'happy':
                     audio_file = 'happy.wav'
                 else:
