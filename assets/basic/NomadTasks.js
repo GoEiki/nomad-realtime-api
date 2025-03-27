@@ -141,24 +141,6 @@ export const NomadTasks = {
             Dependencies: "null",
             Status: "Waiting"
         },
-        {
-            Type: "SubTask",
-            Alias: "Add Ending",
-            TaskID: "TaskQueue6",
-            ToDo: {
-                Method: "TaskQueue",
-                Data: {
-                    Task:"Ending",
-                    ReplaceData: {}
-                }
-            },
-            Check: {
-                Method: "null"
-            },
-            Dependencies: "null",
-            Status: "Waiting"
-        },
-
         
     ]
 };

@@ -69,43 +69,7 @@ export const RobotDemo = {
             Dependencies: "updateinstruction",
             Status: "Waiting"
         },
-        {
-            Type: "SubTask",
-            Alias: "タスク一時停止",
-            TaskID: "PauseTask",
-            ToDo: {
-                Method: "PostNomadEvent",
-                Data: {
-                    event: "notify.event",
-                    data: {
-                        message: "タスクを一時停止します。完了時に本タスクの状態を変更してください"
-                    }
-                }
-            },
-            Check: {
-                Method: "Wait",
-            },
-            Dependencies: "changeturnendtypebeforeRobotDemo",
-            Status: "Waiting"
-        },
 
-
-        {
-            Type: "SubTask",
-            Alias: "ChangeTurnEndTypeAfterRobotDemo",
-            TaskID: "changeturnendtypeafterRobotDemo",
-            ToDo: {
-                Method: "ChangeTurnEndType",
-                Data: {
-                    value: "server_vad"
-                }
-            },
-            Check: {
-                Method: "null"
-            },
-            Dependencies: "PauseTask",
-            Status: "Waiting"
-        },
         
     ]
 }
