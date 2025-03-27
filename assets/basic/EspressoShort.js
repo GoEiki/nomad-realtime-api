@@ -263,6 +263,31 @@ export const EspressoShort = {
             Dependencies: "maintaskflow",
             Status: "Waiting"
         },
+        {
+            Type: "SubTask",
+            Alias: "タスク一時停止",
+            TaskID: "PauseTask",
+            ToDo: {
+                Method: "PostNomadEvent",
+                Data: {
+                    event: "notify.event",
+                    data: {
+                        message: "タスク一時停止中です。ロボットが接続されていればボタンを押してください。"
+                    }
+                }
+            },
+            Check: {
+                Method: "GetNomadEvent",
+                Data: {
+                    event: "message.event",
+                    data: {
+                        message: "confirm"
+                    }
+                }
+            },
+            Dependencies: "resettaskhandler",
+            Status: "Waiting"
+        },
 
     ]
 };
