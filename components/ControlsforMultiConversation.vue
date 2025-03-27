@@ -7,17 +7,45 @@ const inputText = ref(''); // 入力フォームの値
 const options = ['As User', 'Instruction', 'TextOnly', 'Direct']; // 入力オプションのリスト
 const selectedOption = ref(options[0]); // 選択されたオプションを保持
 // コマンド送信関数 (旧: sendCommand → 新: sendcomu)
-async function sendcomu(target: 'ogawa' | 'kyaku') {
-    let command = target === 'ogawa' ? "comuu,hidari" : "comuu,baibai";
-    try {
-        const response = await axios.post("http://127.0.0.1:54321/command", {
-            command: command,
-        });
-        console.log("Command sent successfully:", response.data);
-    } catch (error : any) {
-        console.error("Failed to send command:", error.message);
-    }
+// async function sendcomu(target: 'ogawa' | 'kyaku') {
+//     let command = target === 'ogawa' ? "comuu,hidari" : "comuu,baibai";
+//     try {
+//         const response = await axios.post("http://127.0.0.1:54321/command", {
+//             command: command,
+//         });
+//         console.log("Command sent successfully:", response.data);
+//     } catch (error : any) {
+//         console.error("Failed to send command:", error.message);
+//     }
+// }
+
+async function sendcomu(target: 'ogawa' | 'kyaku' | 'ikiru' | 'shinu') {
+  let command = '';
+  switch (target) {
+    case 'ogawa':
+      command = 'comuu,hidari';
+      break;
+    case 'kyaku':
+      command = 'comuu,baibai';
+      break;
+    case 'ikiru':
+      command = 'comuu,ikiru';
+      break;
+    case 'shinu':
+      command = 'comuu,shinu';
+      break;
+  }
+
+  try {
+    const response = await axios.post("http://127.0.0.1:54321/command", {
+      command: command,
+    });
+    console.log("Command sent successfully:", response.data);
+  } catch (error: any) {
+    console.error("Failed to send command:", error.message);
+  }
 }
+
 // RealTime API にリクエストを送信、selectedOption に応じて応答の属性を変更
 function CreateResponse() {
     const client = realtimestore.client;
@@ -39,42 +67,73 @@ function CreateResponse() {
     }
     inputText.value = '';
 }
-// メッセージ送信とコマンド送信を統合
-function CreateResponsewithConstantInstruction(instructions: string, target: 'ogawa' | 'kyaku') {
-    const client = realtimestore.client;
+
+function CreateResponsewithConstantInstruction(
+  instructions: string | null,
+  target: 'ogawa' | 'kyaku' | 'ikiru' | 'shinu'
+) {
+  const client = realtimestore.client;
+
+  if (instructions) {
     const data = {
-        item: {
-            type: "message",
-            role: "system",
-            content: [
-                {
-                    type: "input_text",
-                    text: instructions
-                }
-            ]
-        }
+      item: {
+        type: "message",
+        role: "system",
+        content: [
+          {
+            type: "input_text",
+            text: instructions
+          }
+        ]
+      }
     };
     client?.realtime.send('conversation.item.create', data);
     client?.createResponse();
-    // 対象に応じてコマンドを送信 (sendcomu に変更)
-    sendcomu(target);
+  }
+
+  // リレーサーバーにコマンド送信
+  sendcomu(target);
 }
+
+// // メッセージ送信とコマンド送信を統合
+// function CreateResponsewithConstantInstruction(instructions: string, target: 'ogawa' | 'kyaku') {
+//     const client = realtimestore.client;
+//     const data = {
+//         item: {
+//             type: "message",
+//             role: "system",
+//             content: [
+//                 {
+//                     type: "input_text",
+//                     text: instructions
+//                 }
+//             ]
+//         }
+//     };
+//     client?.realtime.send('conversation.item.create', data);
+//     client?.createResponse();
+//     // 対象に応じてコマンドを送信 (sendcomu に変更)
+//     sendcomu(target);
+// }
 // 長い `instructions` を変数に格納
 
 const kyakuInstructions1 = ref(`
+    ゲストさんに話しかけてください。
     あなたの役割は、以下の定型文を上から一個ずつ使ってゲストさんとに話しかけることです。
     中にある○○とかの部分は返事次第で変えて適応してください。
     一回の発話は40文字以内にする。そして文中の(ゲスト)さんは必ずゲストの名前で置き換えて呼んでください。
-    もしゲストさんから何か質問や要望があれば、それに応じてください。
+    もしゲストさんから何か質問や要望があれば、それに応じて会話を進めてください。
     
-    #定型文(○○のところは会話者の返答に沿って適宜変えてください)
-    -「乗り移ってきましたよ!ノマードです!」
-    -「横のソファーに座っているカタがオガワさんです、音楽が趣味で、最近レクサスを買ったそうですよ！」
-    -「(ゲスト)さんは最近何か買い物をしましたか？」
+    #定型文
+    - 乗り移ってきましたよ、ノマードです。
+    - 奥のソファーに座っているのが小川さんです、音楽が趣味で、最近レクサスを買ったそうですよ。
+    - (ゲスト)さんも最近何か買い物をしましたか？
+    - 「○○を購入されたんですね！羨ましいです。」
 
    
 `);
 const ogawaInstructions1 = ref(`
+    オガワさんに話しかけてください。
 
     あなたの役割は、以下の定型文を上から一個ずつ使ってオガワさんに話しかけることです。
     中にある○○とかの部分は返事次第で変えて適応してください。
@@ -82,93 +141,102 @@ const ogawaInstructions1 = ref(`
     もしオガワさんから何か質問や要望があれば、それに応じてください。
 
     #定型文(○○のところは会話者の返答に沿って適宜変えてください)
-    - 「(ゲスト)さんは○○を買ったそうですよ。羨ましいですよね。」
-    - 「オガワさんも○○はいかがですか？」
-    - 「なるほど〜」
+    -「オガワさんはどうでしょうか？レクサス以外にも何か欲しいものありますか？」
+    -「なるほどー私も欲しいです。〜〜」
 `);
 
 const kyakuInstructions2 = ref(`
+    ゲストさんに話しかけてください。
     あなたの役割は、以下の定型文を上から一個ずつ使ってゲストさんとに話しかけることです。
     中にある○○とかの部分は返事次第で変えて適応してください。
     一回の発話は40文字以内にする。そして文中の(ゲスト)さんは必ずゲストの名前で置き換えて呼んでください。
-    もしゲストさんから何か質問や要望があれば、それに応じてください。
+    もしゲストさんから何か質問や要望があれば、それに応じて会話を進めてください。
+    
+    #定型文
+    - 「ところで、(ゲスト)さん。普段はyoutubeとかみたりしますか？」
+    -「その中でもどんな○○が一番好きですか？」
+    -「そうなんですね。私はyoutubeでよくM1グランプリの録画をみています、笑いすぎてシステムエラーを起こさないように気をつけています」
 
-    #定型文(○○のところは会話者の返答に沿って適宜変えてください)
-    -「ところで、(ゲスト)さんは最近youtubeとか見たりしますか？」
-    -「へえーそうなんですね、どんな○○が一番好きですか？」
 `);
 const ogawaInstructions2 = ref(`
+    オガワさんに話しかけてください。
+
     あなたの役割は、以下の定型文を上から一個ずつ使ってオガワさんに話しかけることです。
     中にある○○とかの部分は返事次第で変えて適応してください。
-    一回の発話は40文字以内にする。そして発話の前に必ず「オガワさん、〜〜」 と呼びかける。
+    一回の発話は40文字以内にする。
     もしオガワさんから何か質問や要望があれば、それに応じてください。
 
     #定型文(○○のところは会話者の返答に沿って適宜変えてください)
-    -「(ゲスト)さんは○○が好きですよ、オガワさんもどうですか？やってみたくないですか？」
-    -「なるほどー、オガワさんはどんなyoutubeをご覧になるんですか？」
-    -「そうなんですね。ちなみに私は、youtubeでよくお笑いを見ています、笑いすぎてシステムエラーを起こさないように気をつけています。」
+    -「オガワさんはどうでしょうか？youtubeはご覧になられますか？」
+    -「なるほど、普段研究で忙しいイメージでしたので、ちょっと意外です。」
 `);
 
 
 const kyakuInstructions3 = ref(`
+    ゲストさんに話しかけてください。
     あなたの役割は、以下の定型文を上から一個ずつ使ってゲストさんとに話しかけることです。
     中にある○○とかの部分は返事次第で変えて適応してください。
     一回の発話は40文字以内にする。そして文中の(ゲスト)さんは必ずゲストの名前で置き換えて呼んでください。
-    もしオガワさんから何か質問や要望があれば、それに応じてください。
-
+    もしゲストさんから何か質問や要望があれば、それに応じて会話を進めてください。
+    
     #定型文(○○のところは会話者の返答に沿って適宜変えてください)
-    -「ところで話は変わりますが、(ゲスト)さんは今まで行った旅行先でどこが一番よかったですか？」
-    -「へぇ〜○○ですか、(ゲスト)さんは食べ物や観光地で、何が一番気に入りましたか？」
+    -「(ゲスト)さん、ところで最近何か恥ずかしいことや失敗したエピソードはありますか？」
+    -「それは大変でしたね、ちなみにそのあとはどうなったんですか？」
+    -「そうなんですね、無事乗り越えられてよかったです。」
+    -「実は私もこの前のデモ中にwifiが切れてしまいまして、急に動きが止まってみんなをびっくりさせたことがありました」
+
 `);
 
 const ogawaInstructions3 = ref(`
+    オガワさんに話しかけてください。
+
     あなたの役割は、以下の定型文を上から一個ずつ使ってオガワさんに話しかけることです。
     中にある○○とかの部分は返事次第で変えて適応してください。
     一回の発話は40文字以内にする。
     もしオガワさんから何か質問や要望があれば、それに応じてください。
 
     #定型文(○○のところは会話者の返答に沿って適宜変えてください)
-    -「なるほど〜。ゲストさんは○○が旅行で一番気に入っていましたけど、オガワさんはどうですか？○○に行ったことはありますか？」                    - 
-    -「そうなんですね!私も旅行に行ってみたいのですが、コンセントが繋がってるところしか行けないので、しばらくは無理そうです」
+    -「オガワさんはどうですか？同じような失敗はありますか？」
+    -「なるほど、○○したときは焦りますよね」
 `);
 
 
-const kyakuInstructions4 = ref(`
-    あなたの役割は、以下の定型文を上から一個ずつ使ってゲストさんとに話しかけることです。
-    中にある○○とかの部分は返事次第で変えて適応してください。
-    一回の発話は40文字以内にする。そして文中の(ゲスト)さんは必ずゲストの名前で置き換えて呼んでください。
-    もしゲストさんから何か質問や要望があれば、それに応じてください。
+// const kyakuInstructions4 = ref(`
+//     あなたの役割は、以下の定型文を上から一個ずつ使ってゲストさんとに話しかけることです。
+//     中にある○○とかの部分は返事次第で変えて適応してください。
+//     一回の発話は40文字以内にする。そして文中の(ゲスト)さんは必ずゲストの名前で置き換えて呼んでください。
+//     もしゲストさんから何か質問や要望があれば、それに応じてください。
 
-    #定型文(○○のところは会話者の返答に沿って適宜変えてください)
-    -「ところで(ゲスト)さんは最近、何か恥ずかしいことや失敗したエピソードはありますか？」
-    -「それは大変でしたね、ちなみにその後どうなったんですか？」
-    -「そうなんですね、なんとかなってよかったです。」
-`);
+//     #定型文(○○のところは会話者の返答に沿って適宜変えてください)
+//     -「ところで(ゲスト)さんは最近、何か恥ずかしいことや失敗したエピソードはありますか？」
+//     -「それは大変でしたね、ちなみにその後どうなったんですか？」
+//     -「そうなんですね、なんとかなってよかったです。」
+// `);
 
 
-const ogawaInstructions4 = ref(`
-    あなたの役割は、以下の定型文を上から一個ずつ使ってオガワさんに話しかけることです。
-    中にある○○とかの部分は返事次第で変えて適応してください。
-    一回の発話は40文字以内にする。
-    もしオガワさんから何か質問や要望があれば、それに応じてください。
+// const ogawaInstructions4 = ref(`
+//     あなたの役割は、以下の定型文を上から一個ずつ使ってオガワさんに話しかけることです。
+//     中にある○○とかの部分は返事次第で変えて適応してください。
+//     一回の発話は40文字以内にする。
+//     もしオガワさんから何か質問や要望があれば、それに応じてください。
 
-    #定型文(○○のところは会話者の返答に沿って適宜変えてください)
-    -「オガワさんはどうですか？(ゲスト)さんみたいに○○で失敗したことはありますか？」
-    -「そうなんですね！○○したときは焦りますよね」
-`);
+//     #定型文(○○のところは会話者の返答に沿って適宜変えてください)
+//     -「オガワさんはどうですか？(ゲスト)さんみたいに○○で失敗したことはありますか？」
+//     -「そうなんですね！○○したときは焦りますよね」
+// `);
 
 
 const kyakuInstructions5 = ref(`
+    ゲストさんに話しかけてください。
     あなたの役割は、以下の定型文を上から一個ずつ使ってゲストさんとに話しかけることです。
     中にある○○とかの部分は返事次第で変えて適応してください。
-    一回の発話は40文字以内にする。そして発話の前に必ず「(ゲストの名前)さん、〜〜」 と呼びかける。
-    もしゲストさんから何か質問や要望があれば、それに応じてください。
-
+    一回の発話は40文字以内にする。そして文中の(ゲスト)さんは必ずゲストの名前で置き換えて呼んでください。
+    もしゲストさんから何か質問や要望があれば、それに応じて会話を進めてください。
+    
     #定型文(○○のところは会話者の返答に沿って適宜変えてください)
-    -「実は私はこの前デモ中にwifiが切れてしまいまして、急に動きが止まって、みんなをびっくりさせたことがありました!」
-    -「今日は恥ずかしいエピソードを話してくださりありがとうございます。最後にみんなで歌って忘れましょう。僕の好きな音楽をかけますよ。」
-    -「ゲストさん、いっぱい歌って気持ちよかったですね。今日はありがとうございました。気をつけてお帰りください。」
-
+    -「(ゲスト)さん、今日は恥ずかしいエピソードを話してくださりありがとうございます。」
+    -「最後に私の好きな音楽をかけますので、みんなで歌って忘れましょう。」
+    -「(ゲスト)さん、いっぱい歌って気持ちよかったですね、今日はありがとうございました、気をつけてお帰りください。」
 `);
 </script>
 <template>
@@ -185,6 +253,12 @@ const kyakuInstructions5 = ref(`
         </button>
     </div>
     <div>
+        <button @click="CreateResponsewithConstantInstruction(null, 'ikiru')">
+        #0生きる
+    </button>
+    <button @click="CreateResponsewithConstantInstruction(null, 'shinu')">
+        #0しぬ
+    </button>
     <button @click="CreateResponsewithConstantInstruction(kyakuInstructions1, 'kyaku')">
         #1ゲスト/移り〜買い物
     </button>
@@ -198,20 +272,20 @@ const kyakuInstructions5 = ref(`
     <button @click="CreateResponsewithConstantInstruction(ogawaInstructions2, 'ogawa')">
         #2小川/youtube
     </button>
-    <button @click="CreateResponsewithConstantInstruction(kyakuInstructions3, 'kyaku')">
+    <!-- <button @click="CreateResponsewithConstantInstruction(kyakuInstructions3, 'kyaku')">
         #3ゲスト/旅行
     </button>
     <button @click="CreateResponsewithConstantInstruction(ogawaInstructions3, 'ogawa')">
         #3小川/旅行
+    </button> -->
+    <button @click="CreateResponsewithConstantInstruction(kyakuInstructions3, 'kyaku')">
+       #3ゲスト/恥ずかしい話
     </button>
-    <button @click="CreateResponsewithConstantInstruction(kyakuInstructions4, 'kyaku')">
-       #4ゲスト/恥ずかしい話
-    </button>
-    <button @click="CreateResponsewithConstantInstruction(ogawaInstructions4, 'ogawa')">
-        #4小川/恥ずかしい話
+    <button @click="CreateResponsewithConstantInstruction(ogawaInstructions3, 'ogawa')">
+        #3小川/恥ずかしい話
     </button>
     <button @click="CreateResponsewithConstantInstruction(kyakuInstructions5, 'kyaku')">
-       #5ゲスト/しめ
+       #4ゲスト/しめ
     </button>
 
 
