@@ -142,7 +142,7 @@ def run_server(port=8000, output_device=None):
         device_info = p.get_device_info_by_index(output_device)
         print(f'Using output device: {device_info["name"]} (index {output_device})')
         p.terminate()
-    httpd.serve_forever()
+    server.serve_forever()
 
 
 def main():
