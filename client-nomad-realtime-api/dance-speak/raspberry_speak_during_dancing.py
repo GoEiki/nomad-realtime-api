@@ -1,24 +1,7 @@
 import json
-import argparse
-import wave
-import pyaudio
-import time
-import threading
+import subprocess
 from http.server import HTTPServer, BaseHTTPRequestHandler
-
-def find_jabra_device():
-    """Find the Jabra audio output device."""
-    p = pyaudio.PyAudio()
-    device_count = p.get_device_count()
-    
-    for i in range(device_count):
-        device_info = p.get_device_info_by_index(i)
-        if device_info['maxOutputChannels'] > 0 and 'Jabra' in device_info['name']:
-            p.terminate()
-            return i
-    
-    p.terminate()
-    return None
+import threading
 
 class AudioRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -35,27 +18,34 @@ class AudioRequestHandler(BaseHTTPRequestHandler):
             # 'speak'キーが存在するか確認
             if 'speak' in data:
                 # 再生する音声ファイルの名前を選択する
-                audio_mapping = {
-                    'appear': 'r-appear.wav',
-                    'disappear': 'r-disappear.wav',
-                    'huh': 'huh.wav',
-                    'dont': 'dont_believe.wav',
-                    'tension': 'tension-up.wav',
-                    'yeah': 'yeah.wav',
-                    'dancetogether': 'dance_together.wav',
-                    'happy': 'happy.wav'
-                }
-                
-                if data['speak'] not in audio_mapping:
+                if data['speak'] == 'appear':
+                    audio_file = 'r-appear.wav'
+                elif data['speak'] == 'disappear':
+                    audio_file = 'r-disappear.wav'
+                elif data['speak'] == 'huh':
+                    audio_file = 'huh.wav'
+                elif data['speak'] == 'dont':
+                    audio_file = 'dont_believe.wav'
+                elif data['speak'] == 'tension':
+                    audio_file = 'tension-up.wav'
+                elif data['speak'] == 'yeah':
+                    audio_file = 'yeah.wav'
+                elif data['speak'] == 'dancetogether':
+                    audio_file = 'dance_together.wav'
+                elif data['speak'] == 'happy':
+                    audio_file = 'happy.wav'
+                else:
                     self.send_response(400)
                     self.send_header('Content-type', 'text/plain')
                     self.end_headers()
                     self.wfile.write(b'Invalid speak value')
                     return
                 
+                # 音声ファイルのフルパス
+                audio_file = 'audio/' + audio_file
+                
                 # 別スレッドで音声を再生する
-                audio_file = f'audio/{audio_mapping[data["speak"]]}'
-                threading.Thread(target=play_wav, args=(audio_file, server.output_device)).start()
+                threading.Thread(target=play_wav, args=(audio_file,)).start()
                 
                 # Send success response
                 self.send_response(200)
@@ -77,92 +67,16 @@ class AudioRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(b'Invalid JSON')
 
 
-def list_audio_devices():
-    """List all available audio output devices."""
-    p = pyaudio.PyAudio()
-    device_count = p.get_device_count()
-    print("Available Audio Output Devices:")
-    for i in range(device_count):
-        device_info = p.get_device_info_by_index(i)
-        if device_info['maxOutputChannels'] > 0:
-            print(f"Device {i}: {device_info['name']}")
-    p.terminate()
-
-
-def play_wav(file_path, output_device=None):
-    """Play WAV file on specified output device."""
-    # waveファイルを読み込む
-    wf = wave.open(file_path, 'rb')
-
-    p = pyaudio.PyAudio()
-
-    # オーディオストリームを開く
-    stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
-                    channels=wf.getnchannels(),
-                    rate=wf.getframerate(),
-                    output=True,
-                    output_device_index=output_device)
-
-    # データを読み込み、再生
-    chunk_size = 1024
-    data = wf.readframes(chunk_size)
-    while data:
-        stream.write(data)
-        data = wf.readframes(chunk_size)
-
-    # 最後のバッファをフラッシュするための待機
-    time.sleep(0.35)
-    # ストリームを停止・終了
-    stream.stop_stream()
-    stream.close()
-
-    # PyAudioを終了
-    p.terminate()
-
-    # ファイルを閉じる
-    wf.close()
-
-
-def run_server(port=8000, output_device=None):
-    """Run the HTTP server for audio playback."""
-    global server
+def run_server(port=8000):
     server_address = ('', port)
-    server = HTTPServer(server_address, AudioRequestHandler)
-    
-    # If no device specified, try to find Jabra device
-    if output_device is None:
-        output_device = find_jabra_device()
-        if output_device is None:
-            print("No Jabra device found. Using system default.")
-    
-    server.output_device = output_device
+    httpd = HTTPServer(server_address, AudioRequestHandler)
     print(f'Starting server on port {port}...')
-    if output_device is not None:
-        p = pyaudio.PyAudio()
-        device_info = p.get_device_info_by_index(output_device)
-        print(f'Using output device: {device_info["name"]} (index {output_device})')
-        p.terminate()
-    server.serve_forever()
+    httpd.serve_forever()
 
 
-def main():
-    # Parse command-line arguments
-    parser = argparse.ArgumentParser(description='Audio Playback Server')
-    parser.add_argument('-p', '--port', type=int, default=8000, 
-                        help='Port number for the server (default: 8000)')
-    parser.add_argument('--list-devices', action='store_true', 
-                        help='List available audio output devices')
-    
-    args = parser.parse_args()
-
-    # List devices if requested
-    if args.list_devices:
-        list_audio_devices()
-        return
-
-    # Run the server
-    run_server(port=args.port)
-
+def play_wav(file_path):
+    """ `aplay` コマンドを使用して WAV ファイルを再生する """
+    subprocess.run(["aplay", file_path], check=True)
 
 if __name__ == '__main__':
-    main()
+    run_server()
