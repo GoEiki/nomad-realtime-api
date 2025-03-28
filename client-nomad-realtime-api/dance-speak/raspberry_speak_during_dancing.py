@@ -6,6 +6,20 @@ import time
 import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
+def find_jabra_device():
+    """Find the Jabra audio output device."""
+    p = pyaudio.PyAudio()
+    device_count = p.get_device_count()
+    
+    for i in range(device_count):
+        device_info = p.get_device_info_by_index(i)
+        if device_info['maxOutputChannels'] > 0 and 'Jabra' in device_info['name']:
+            p.terminate()
+            return i
+    
+    p.terminate()
+    return None
+
 class AudioRequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         # Get the content length of the incoming request
@@ -114,10 +128,20 @@ def run_server(port=8000, output_device=None):
     global server
     server_address = ('', port)
     server = HTTPServer(server_address, AudioRequestHandler)
+    
+    # If no device specified, try to find Jabra device
+    if output_device is None:
+        output_device = find_jabra_device()
+        if output_device is None:
+            print("No Jabra device found. Using system default.")
+    
     server.output_device = output_device
     print(f'Starting server on port {port}...')
     if output_device is not None:
-        print(f'Using output device index: {output_device}')
+        p = pyaudio.PyAudio()
+        device_info = p.get_device_info_by_index(output_device)
+        print(f'Using output device: {device_info["name"]} (index {output_device})')
+        p.terminate()
     httpd.serve_forever()
 
 
@@ -126,8 +150,6 @@ def main():
     parser = argparse.ArgumentParser(description='Audio Playback Server')
     parser.add_argument('-p', '--port', type=int, default=8000, 
                         help='Port number for the server (default: 8000)')
-    parser.add_argument('-d', '--device', type=int, 
-                        help='Output device index for audio playback')
     parser.add_argument('--list-devices', action='store_true', 
                         help='List available audio output devices')
     
@@ -139,7 +161,7 @@ def main():
         return
 
     # Run the server
-    run_server(port=args.port, output_device=args.device)
+    run_server(port=args.port)
 
 
 if __name__ == '__main__':
